@@ -1,11 +1,10 @@
 'use server';
 
-import { createOpenAI } from '@ai-sdk/openai';
 import { generateText } from 'ai';
-import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod/v4';
 
+import { getOpenAIProvider } from '@/app/api/openai';
 import { OPENAI_TEXT_MODELS } from '@/app/workflow/openai-data';
 
 export type GenerateTextApiResponse =
@@ -23,16 +22,10 @@ const bodySchema = z.object({
 export async function POST(
   req: NextRequest,
 ): Promise<NextResponse<GenerateTextApiResponse>> {
-  const cookieStore = await cookies();
-  const openAIApiKey = cookieStore.get('openAIApiKey')?.value;
-
   try {
     const body = await req.json();
     const { model, temperature, prompt, system } = bodySchema.parse(body);
-
-    const openai = createOpenAI({
-      apiKey: openAIApiKey,
-    });
+    const openai = getOpenAIProvider();
 
     const { text } = await generateText({
       model: openai(model),
@@ -54,8 +47,7 @@ export async function POST(
 
     return NextResponse.json(
       {
-        error: 'Internal server error',
-        details: error instanceof Error ? error.message : String(error),
+        error: error instanceof Error ? error.message : 'Internal server error',
       },
       { status: 500 },
     );

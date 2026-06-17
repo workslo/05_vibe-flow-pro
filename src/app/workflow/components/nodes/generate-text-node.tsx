@@ -35,9 +35,6 @@ export type GenerateTextNodeData = WorkflowNodeData & {
   text?: string;
 };
 
-// This is an example of how to implement the WorkflowNode component. All the nodes in the Workflow Builder example
-// are variations on this CustomNode defined in the index.tsx file.
-// You can also create new components for each of your nodes for greater flexibility.
 function GenerateTextNode({ id, data }: NodeProps<GenerateTextNodeType>) {
   const { updateNodeData } = useReactFlow();
   const model = data?.config?.model ?? DEFAULT_TEXT_MODEL;

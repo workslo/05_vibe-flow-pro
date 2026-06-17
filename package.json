@@ -1,5 +1,6 @@
 {
-  "name": "ai-workflow-editor",
+  "name": "vibe-flow-pro",
+  "description": "A polished workflow console for designing and running AI generation flows with React Flow, Zustand, Next.js, and the Vercel AI SDK.",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -7,7 +8,7 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "eslint . --max-warnings=0"
   },
   "dependencies": {
     "@ai-sdk/openai": "^2.0.103",

@@ -39,9 +39,6 @@ export type GenerateImageNodeData = WorkflowNodeData & {
   image?: string;
 };
 
-// This is an example of how to implement the WorkflowNode component. All the nodes in the Workflow Builder example
-// are variations on this CustomNode defined in the index.tsx file.
-// You can also create new components for each of your nodes for greater flexibility.
 function GenerateImageNode({ id, data }: NodeProps<GenerateImageNodeType>) {
   const { updateNodeData } = useReactFlow();
   const model = data?.config?.model ?? 'dall-e-2';
@@ -142,6 +139,7 @@ function GenerateImageNode({ id, data }: NodeProps<GenerateImageNodeType>) {
 
             {data.image ? (
               <div className="flex flex-col gap-2 w-full">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={`data:image/png;base64,${data.image}`}
                   alt="Visualized image"

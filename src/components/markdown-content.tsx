@@ -133,6 +133,7 @@ const components: Partial<Components> = {
   ),
   img: ({ alt, ...props }: React.ImgHTMLAttributes<HTMLImageElement>) => (
     // biome-ignore lint/a11y/useAltText: alt is not required
+    // eslint-disable-next-line @next/next/no-img-element
     <img className="rounded-md" alt={alt} {...props} />
   ),
   code: ({

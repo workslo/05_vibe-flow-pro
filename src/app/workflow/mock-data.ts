@@ -6,14 +6,14 @@ export const initialNodes: AppNode[] = [
     type: 'text-input-node',
     id: 'characterPromptNode',
     data: {
-      text: 'Colorful psychedelic modern pattern in 5 words.',
+      text: 'Describe a polished product-console hero for a workflow automation tool in one concise visual direction.',
     },
   }),
   createNodeByType({
     type: 'text-input-node',
     id: 'systemNode',
     data: {
-      text: 'You are an AI assistant that generates images and text for high quality design projects',
+      text: 'You are Vibe Flow Pro, a precise workflow design assistant for production-minded builders.',
     },
   }),
   createNodeByType({ type: 'generate-text-node', id: 'generateTextNode' }),

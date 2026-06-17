@@ -1,11 +1,10 @@
 'use server';
 
-import { createOpenAI } from '@ai-sdk/openai';
 import { experimental_generateImage as generateImage } from 'ai';
-import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod/v4';
 
+import { getOpenAIProvider } from '@/app/api/openai';
 import {
   ImageSize,
   IMAGE_SIZES,
@@ -41,9 +40,6 @@ const bodySchema = z
 export async function POST(
   req: NextRequest,
 ): Promise<NextResponse<GenerateImageApiResponse>> {
-  const cookieStore = await cookies();
-  const openAIApiKey = cookieStore.get('openAIApiKey')?.value;
-
   try {
     const body = await req.json();
     const { model, prompt, size } = bodySchema.parse(body);
@@ -55,9 +51,7 @@ export async function POST(
       );
     }
 
-    const openai = createOpenAI({
-      apiKey: openAIApiKey,
-    });
+    const openai = getOpenAIProvider();
 
     const { image } = await generateImage({
       model: openai.image(model),

@@ -2,7 +2,7 @@
 
 import { useState, useCallback, ComponentProps } from 'react';
 import { useReactFlow } from '@xyflow/react';
-import { Command, GripVertical, Plus } from 'lucide-react';
+import { GitBranch, GripVertical, Plus } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
 
 import {
@@ -26,6 +26,7 @@ import { cn } from '@/lib/utils';
 import { iconMapping } from '@/app/workflow/utils/icon-mapping';
 import { useAppStore } from '@/app/workflow/store';
 import { type AppStore } from '@/app/workflow/store/app-store';
+import { productProfile } from '@/app/workflow/product-profile';
 import { nodesConfig } from '../../config';
 
 export function AppSidebar(props: ComponentProps<typeof Sidebar>) {
@@ -34,9 +35,9 @@ export function AppSidebar(props: ComponentProps<typeof Sidebar>) {
       <SidebarHeader className="py-0">
         <div className="flex gap-2 px-1 h-14 items-center ">
           <div className="flex aspect-square size-5 items-center justify-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground">
-            <Command className="size-3" />
+            <GitBranch className="size-3" />
           </div>
-          <span className="truncate font-semibold">AI Workflow Editor</span>
+          <span className="truncate font-semibold">{productProfile.name}</span>
         </div>
         <SidebarMenu>
           {Object.values(nodesConfig).map((item) => (
@@ -98,7 +99,7 @@ function DraggableItem(props: NodeConfig) {
   return (
     <SidebarMenuItem
       className={cn(
-        'relative border-2 active:scale-[.99] rounded-md',
+        'relative rounded-md border border-sidebar-border active:scale-[.99]',
         isDragging ? 'border-green-500' : '',
       )}
       onDragStart={onDragStart}
@@ -115,7 +116,7 @@ function DraggableItem(props: NodeConfig) {
           <Plus className="size-4" />
         </span>
       )}
-      <SidebarMenuButton className="bg-card cursor-grab active:cursor-grabbing">
+      <SidebarMenuButton className="cursor-grab bg-sidebar-accent text-sidebar-accent-foreground hover:bg-sidebar-accent/80 hover:text-sidebar-accent-foreground active:cursor-grabbing">
         {IconComponent ? <IconComponent aria-label={props?.icon} /> : null}
         <span>{props.title}</span>
         <GripVertical className="ml-auto" />

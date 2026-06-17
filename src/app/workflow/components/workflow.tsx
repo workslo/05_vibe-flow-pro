@@ -64,6 +64,7 @@ export default function Workflow() {
 
   return (
     <ReactFlow
+      className="h-full"
       nodes={store.nodes}
       edges={store.edges}
       onNodesChange={store.onNodesChange}

@@ -6,7 +6,6 @@ import { IncomingNodeData } from '@/app/workflow/hooks/use-workflow-runner';
 const DEFAULT_IMAGE_MODEL = 'dall-e-2';
 const DEFAULT_IMAGE_SIZE = '512x512';
 
-// calls the API endpoint that exposes Vercel AI SDK `generateImage` functionality.
 export const processGenerateImageNode: NodeProcessor<
   GenerateImageNodeType
 > = async (incomingNodeData: IncomingNodeData, node: GenerateImageNodeType) => {
