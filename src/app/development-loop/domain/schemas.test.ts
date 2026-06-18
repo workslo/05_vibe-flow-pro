@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   featureBriefSchema,
+  developmentExecutionStageSchema,
   validationArtifactSchema,
 } from './schemas';
 
@@ -25,5 +26,10 @@ describe('development loop schemas', () => {
         feedback: [],
       }),
     ).toThrow();
+  });
+
+  it('accepts execution stages and excludes the feature brief stage', () => {
+    expect(developmentExecutionStageSchema.parse('test')).toBe('test');
+    expect(() => developmentExecutionStageSchema.parse('feature-brief')).toThrow();
   });
 });

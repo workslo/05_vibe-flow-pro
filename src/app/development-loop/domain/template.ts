@@ -21,12 +21,16 @@ export type DevelopmentGraphEdge = {
 };
 
 const requiredConnections = [
-  ['feature-brief', 'test-plan'],
-  ['test-plan', 'code'],
-  ['code', 'test'],
-  ['test', 'validate'],
-  ['validate', 'code'],
+  { source: 'feature-brief', target: 'test-plan', kind: 'forward' },
+  { source: 'test-plan', target: 'code', kind: 'forward' },
+  { source: 'code', target: 'test', kind: 'forward' },
+  { source: 'test', target: 'validate', kind: 'forward' },
+  { source: 'validate', target: 'code', kind: 'revision' },
 ] as const;
+
+function edgeSignature(edge: Pick<DevelopmentGraphEdge, 'source' | 'target' | 'kind'>) {
+  return `${edge.source}::${edge.target}::${edge.kind}`;
+}
 
 export const canonicalDevelopmentGraph = {
   nodes: [
@@ -84,11 +88,32 @@ export function validateDevelopmentGraph(
     }
   }
 
-  for (const [source, target] of requiredConnections) {
-    if (!edges.some((edge) => edge.source === source && edge.target === target)) {
+  const requiredConnectionSignatures = new Set(
+    requiredConnections.map((edge) => edgeSignature(edge)),
+  );
+  const actualConnectionCounts = new Map<string, number>();
+
+  for (const edge of edges) {
+    const signature = edgeSignature(edge);
+    actualConnectionCounts.set(
+      signature,
+      (actualConnectionCounts.get(signature) ?? 0) + 1,
+    );
+
+    if (!requiredConnectionSignatures.has(signature)) {
       return {
         valid: false,
-        error: `Missing required connection: ${source} -> ${target}`,
+        error: `Unexpected connection: ${edge.source} -> ${edge.target}`,
+      };
+    }
+  }
+
+  for (const requiredConnection of requiredConnections) {
+    const signature = edgeSignature(requiredConnection);
+    if ((actualConnectionCounts.get(signature) ?? 0) !== 1) {
+      return {
+        valid: false,
+        error: `Missing required connection: ${requiredConnection.source} -> ${requiredConnection.target}`,
       };
     }
   }

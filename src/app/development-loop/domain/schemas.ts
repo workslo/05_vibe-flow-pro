@@ -1,6 +1,6 @@
 import { z } from 'zod/v4';
 
-export const developmentStageSchema = z.enum([
+export const developmentExecutionStageSchema = z.enum([
   'test-plan',
   'code',
   'test',
@@ -86,7 +86,9 @@ export const developmentRunSchema = z.object({
   error: z.string().optional(),
 });
 
-export type DevelopmentStage = z.infer<typeof developmentStageSchema>;
+export type DevelopmentExecutionStage = z.infer<
+  typeof developmentExecutionStageSchema
+>;
 export type RunStatus = z.infer<typeof runStatusSchema>;
 export type ValidationVerdict = z.infer<
   typeof validationArtifactSchema
