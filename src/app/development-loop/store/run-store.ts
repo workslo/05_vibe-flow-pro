@@ -156,7 +156,10 @@ export function createDevelopmentRunStore(
           set((state) => ({
             activeRun: event.run,
             currentStage: undefined,
-            currentIteration: event.run.iterations.length,
+            currentIteration: Math.max(
+              state.currentIteration,
+              event.run.iterations.length,
+            ),
             controller: undefined,
             runSummaries: [buildRunSummary(event.run), ...state.runSummaries],
           }));

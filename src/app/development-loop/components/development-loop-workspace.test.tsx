@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -75,7 +75,7 @@ describe('DevelopmentLoopWorkspace', () => {
     ).toBeVisible();
   });
 
-  it('keeps completed stage evidence visible while the next stage is running', async () => {
+  it('shows iteration 1 and live test-plan evidence while code is still running', async () => {
     const user = userEvent.setup();
     const scripted = createScriptedDevelopmentAdapter(['pass']);
     let resolveCodeProposal!: (artifact: CodeArtifact) => void;
@@ -115,7 +115,13 @@ describe('DevelopmentLoopWorkspace', () => {
     expect(
       await screen.findByLabelText('Code feature: Running'),
     ).toBeInTheDocument();
-    expect(screen.getByText('Focused contract plan.')).toBeInTheDocument();
+    expect(screen.getByText('Iteration 1 of 3')).toBeVisible();
+    expect(screen.queryByText('Iteration 0 of 3')).not.toBeInTheDocument();
+    expect(
+      within(
+        screen.getByRole('complementary', { name: 'Run inspector' }),
+      ).getByText('Focused contract plan.'),
+    ).toBeVisible();
     expect(screen.getByRole('button', { name: 'Run loop' })).toBeDisabled();
     expect(screen.getByRole('button', { name: 'Stop' })).toBeVisible();
 
@@ -127,6 +133,8 @@ describe('DevelopmentLoopWorkspace', () => {
     });
 
     expect(await screen.findByText('Stopped')).toBeVisible();
+    expect(screen.getByText('Iteration 1 of 3')).toBeVisible();
+    expect(screen.queryByText('Iteration 0 of 3')).not.toBeInTheDocument();
   });
 
   it('rejects an invalid canonical graph before calling the adapter', async () => {
@@ -163,7 +171,7 @@ describe('DevelopmentLoopWorkspace', () => {
     expect(createTestPlan).not.toHaveBeenCalled();
   });
 
-  it('shows blocked provider guidance and the failed stage', async () => {
+  it('shows iteration 1 and blocked provider guidance after a stage failure', async () => {
     const user = userEvent.setup();
     const providerError =
       'OPENAI_API_KEY is not configured. Add it to .env.local and restart the dev server.';
@@ -193,6 +201,8 @@ describe('DevelopmentLoopWorkspace', () => {
     await user.click(screen.getByRole('button', { name: 'Run loop' }));
 
     expect(await screen.findByText('The run is blocked.')).toBeVisible();
+    expect(screen.getByText('Iteration 1 of 3')).toBeVisible();
+    expect(screen.queryByText('Iteration 0 of 3')).not.toBeInTheDocument();
     expect(screen.getByText(providerError)).toBeVisible();
     expect(
       screen.getByText(

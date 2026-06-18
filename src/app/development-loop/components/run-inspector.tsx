@@ -1,10 +1,17 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { ChevronDown } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
-import type { DevelopmentIteration, RunStatus } from '../domain/schemas';
+import type {
+  CodeArtifact,
+  DevelopmentIteration,
+  RunStatus,
+  TestArtifact,
+  TestPlanArtifact,
+  ValidationArtifact,
+} from '../domain/schemas';
 import { useDevelopmentRunStore } from '../store';
 
 const statusLabels = {
@@ -26,15 +33,33 @@ const statusClasses = {
 } satisfies Record<RunStatus, string>;
 
 type ArtifactSectionId = 'test-plan' | 'code' | 'test' | 'validation';
+type ArtifactSectionItem<TArtifact> = {
+  iteration: number;
+  artifact: TArtifact;
+};
 
-function ArtifactSection({
+const stageSequence = ['test-plan', 'code', 'test', 'validate'] as const;
+
+function createArtifactSectionItems<TArtifact>(
+  iterations: DevelopmentIteration[],
+  selectArtifact: (iteration: DevelopmentIteration) => TArtifact,
+): ArtifactSectionItem<TArtifact>[] {
+  return iterations.map((iteration) => ({
+    iteration: iteration.number,
+    artifact: selectArtifact(iteration),
+  }));
+}
+
+function ArtifactSection<TArtifact>({
   id,
   title,
-  iterations,
+  items,
+  renderArtifact,
 }: {
   id: ArtifactSectionId;
   title: string;
-  iterations: DevelopmentIteration[];
+  items: ArtifactSectionItem<TArtifact>[];
+  renderArtifact: (artifact: TArtifact) => ReactNode;
 }) {
   const [expanded, setExpanded] = useState(true);
   const contentId = `${id}-evidence`;
@@ -61,77 +86,16 @@ function ArtifactSection({
       </h3>
       {expanded ? (
         <div id={contentId} className="space-y-5 px-5 pb-5">
-          {iterations.length ? (
-            iterations.map((iteration) => (
+          {items.length ? (
+            items.map((item) => (
               <div
-                key={`${id}-${iteration.number}`}
+                key={`${id}-${item.iteration}`}
                 className="border-l-2 border-slate-200 pl-3"
               >
                 <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-500">
-                  Iteration {iteration.number}
+                  Iteration {item.iteration}
                 </p>
-                {id === 'test-plan' ? (
-                  <>
-                    <p className="mt-2 text-sm leading-6 text-slate-700">
-                      {iteration.testPlan.strategy}
-                    </p>
-                    <ul className="mt-2 space-y-1 text-xs text-slate-600">
-                      {iteration.testPlan.cases.map((testCase) => (
-                        <li key={testCase.id}>
-                          <span className="font-mono">{testCase.id}</span>{' '}
-                          {testCase.name}
-                        </li>
-                      ))}
-                    </ul>
-                  </>
-                ) : null}
-                {id === 'code' ? (
-                  <>
-                    <p className="mt-2 text-sm leading-6 text-slate-700">
-                      {iteration.code.summary}
-                    </p>
-                    <ul className="mt-2 space-y-2 text-xs text-slate-600">
-                      {iteration.code.files.map((file) => (
-                        <li key={file.path}>
-                          <span className="font-mono text-slate-800">
-                            {file.path}
-                          </span>
-                          <span className="block">{file.change}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </>
-                ) : null}
-                {id === 'test' ? (
-                  <ul className="mt-2 space-y-2 text-xs text-slate-600">
-                    {iteration.test.cases.map((testCase) => (
-                      <li key={testCase.testCaseId}>
-                        <span className="font-mono font-semibold uppercase">
-                          {testCase.status}
-                        </span>
-                        <span className="ml-2">{testCase.evidence}</span>
-                      </li>
-                    ))}
-                  </ul>
-                ) : null}
-                {id === 'validation' ? (
-                  <>
-                    <p className="mt-2 text-sm leading-6 text-slate-700">
-                      {iteration.validation.rationale}
-                    </p>
-                    {iteration.validation.feedback.length ? (
-                      <ul className="mt-2 list-disc space-y-1 pl-4 text-xs leading-5 text-amber-800">
-                        {iteration.validation.feedback.map((feedback) => (
-                          <li key={feedback}>{feedback}</li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <p className="mt-2 text-xs text-emerald-700">
-                        No revision feedback.
-                      </p>
-                    )}
-                  </>
-                ) : null}
+                {renderArtifact(item.artifact)}
               </div>
             ))
           ) : (
@@ -150,6 +114,8 @@ export function RunInspector() {
   const currentIteration = useDevelopmentRunStore(
     (state) => state.currentIteration,
   );
+  const currentStage = useDevelopmentRunStore((state) => state.currentStage);
+  const stageArtifacts = useDevelopmentRunStore((state) => state.stageArtifacts);
   const runSummaries = useDevelopmentRunStore((state) => state.runSummaries);
   const status = activeRun?.status ?? 'idle';
   const iterations = activeRun?.iterations ?? [];
@@ -157,6 +123,77 @@ export function RunInspector() {
     (summary) => summary.id !== activeRun?.id,
   );
   const hasMissingKeyError = activeRun?.error?.includes('OPENAI_API_KEY');
+  const currentStageIndex = currentStage
+    ? stageSequence.indexOf(currentStage)
+    : -1;
+  const liveIterationNumber =
+    status === 'running' && currentIteration > iterations.length
+      ? currentIteration
+      : undefined;
+  const completedLiveStages =
+    liveIterationNumber && currentStageIndex > 0
+      ? stageSequence.slice(0, currentStageIndex)
+      : [];
+  const testPlanItems = createArtifactSectionItems(
+    iterations,
+    (iteration) => iteration.testPlan,
+  );
+  const codeItems = createArtifactSectionItems(
+    iterations,
+    (iteration) => iteration.code,
+  );
+  const testItems = createArtifactSectionItems(
+    iterations,
+    (iteration) => iteration.test,
+  );
+  const validationItems = createArtifactSectionItems(
+    iterations,
+    (iteration) => iteration.validation,
+  );
+
+  if (
+    liveIterationNumber &&
+    completedLiveStages.includes('test-plan') &&
+    stageArtifacts['test-plan']
+  ) {
+    testPlanItems.push({
+      iteration: liveIterationNumber,
+      artifact: stageArtifacts['test-plan'] as TestPlanArtifact,
+    });
+  }
+
+  if (
+    liveIterationNumber &&
+    completedLiveStages.includes('code') &&
+    stageArtifacts.code
+  ) {
+    codeItems.push({
+      iteration: liveIterationNumber,
+      artifact: stageArtifacts.code as CodeArtifact,
+    });
+  }
+
+  if (
+    liveIterationNumber &&
+    completedLiveStages.includes('test') &&
+    stageArtifacts.test
+  ) {
+    testItems.push({
+      iteration: liveIterationNumber,
+      artifact: stageArtifacts.test as TestArtifact,
+    });
+  }
+
+  if (
+    liveIterationNumber &&
+    completedLiveStages.includes('validate') &&
+    stageArtifacts.validate
+  ) {
+    validationItems.push({
+      iteration: liveIterationNumber,
+      artifact: stageArtifacts.validate as ValidationArtifact,
+    });
+  }
 
   return (
     <aside
@@ -212,22 +249,84 @@ export function RunInspector() {
       <ArtifactSection
         id="test-plan"
         title="Test plan"
-        iterations={iterations}
+        items={testPlanItems}
+        renderArtifact={(artifact) => (
+          <>
+            <p className="mt-2 text-sm leading-6 text-slate-700">
+              {artifact.strategy}
+            </p>
+            <ul className="mt-2 space-y-1 text-xs text-slate-600">
+              {artifact.cases.map((testCase) => (
+                <li key={testCase.id}>
+                  <span className="font-mono">{testCase.id}</span>{' '}
+                  {testCase.name}
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
       />
       <ArtifactSection
         id="code"
         title="Code proposal"
-        iterations={iterations}
+        items={codeItems}
+        renderArtifact={(artifact) => (
+          <>
+            <p className="mt-2 text-sm leading-6 text-slate-700">
+              {artifact.summary}
+            </p>
+            <ul className="mt-2 space-y-2 text-xs text-slate-600">
+              {artifact.files.map((file) => (
+                <li key={file.path}>
+                  <span className="font-mono text-slate-800">
+                    {file.path}
+                  </span>
+                  <span className="block">{file.change}</span>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
       />
       <ArtifactSection
         id="test"
         title="Test evidence"
-        iterations={iterations}
+        items={testItems}
+        renderArtifact={(artifact) => (
+          <ul className="mt-2 space-y-2 text-xs text-slate-600">
+            {artifact.cases.map((testCase) => (
+              <li key={testCase.testCaseId}>
+                <span className="font-mono font-semibold uppercase">
+                  {testCase.status}
+                </span>
+                <span className="ml-2">{testCase.evidence}</span>
+              </li>
+            ))}
+          </ul>
+        )}
       />
       <ArtifactSection
         id="validation"
         title="Validation"
-        iterations={iterations}
+        items={validationItems}
+        renderArtifact={(artifact) => (
+          <>
+            <p className="mt-2 text-sm leading-6 text-slate-700">
+              {artifact.rationale}
+            </p>
+            {artifact.feedback.length ? (
+              <ul className="mt-2 list-disc space-y-1 pl-4 text-xs leading-5 text-amber-800">
+                {artifact.feedback.map((feedback) => (
+                  <li key={feedback}>{feedback}</li>
+                ))}
+              </ul>
+            ) : (
+              <p className="mt-2 text-xs text-emerald-700">
+                No revision feedback.
+              </p>
+            )}
+          </>
+        )}
       />
 
       <section className="border-t border-slate-200 px-5 py-5">
