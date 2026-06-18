@@ -22,6 +22,7 @@ export type DevelopmentRunState = {
   activeRun?: DevelopmentRun;
   currentStage?: DevelopmentExecutionStage;
   currentIteration: number;
+  stageArtifacts: Partial<Record<DevelopmentExecutionStage, unknown>>;
   runSummaries: DevelopmentRunSummary[];
   controller?: AbortController;
 };
@@ -76,6 +77,7 @@ export function createDevelopmentRunStore(
     activeRun: initialState?.activeRun,
     currentStage: initialState?.currentStage,
     currentIteration: initialState?.currentIteration ?? 0,
+    stageArtifacts: initialState?.stageArtifacts ?? {},
     runSummaries: initialState?.runSummaries ?? [],
     controller: initialState?.controller,
 
@@ -87,6 +89,7 @@ export function createDevelopmentRunStore(
         activeRun: undefined,
         currentStage: undefined,
         currentIteration: 0,
+        stageArtifacts: {},
       }),
 
     requestStop: () => {
@@ -109,10 +112,14 @@ export function createDevelopmentRunStore(
           });
           return;
         case 'stage-completed':
-          set({
+          set((state) => ({
             currentStage: event.stage,
             currentIteration: event.iteration,
-          });
+            stageArtifacts: {
+              ...state.stageArtifacts,
+              [event.stage]: event.artifact,
+            },
+          }));
           return;
         case 'iteration-completed': {
           const activeRun = get().activeRun;
@@ -162,6 +169,7 @@ export function createDevelopmentRunStore(
         activeRun: undefined,
         currentStage: undefined,
         currentIteration: 0,
+        stageArtifacts: {},
         controller: undefined,
       }),
   }));
