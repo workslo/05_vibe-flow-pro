@@ -19,7 +19,7 @@ export default function WorkflowLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body>
+      <body suppressHydrationWarning>
         <AppStoreProvider
           initialState={{ nodes: initialNodes, edges: initialEdges }}
         >
