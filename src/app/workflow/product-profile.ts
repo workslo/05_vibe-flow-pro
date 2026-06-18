@@ -23,6 +23,7 @@ export const productProfile = {
     },
   ],
   links: {
+    developmentLoop: '/development-loop',
     workflow: '/workflow',
     reactFlowDocs: 'https://reactflow.dev/',
   },
