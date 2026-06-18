@@ -228,4 +228,48 @@ describe('runDevelopmentLoop', () => {
     expect(run.status).toBe('stopped');
     expect(run.iterations).toHaveLength(0);
   });
+
+  it('keeps stopped status when a stage aborts the signal and then rejects', async () => {
+    const controller = new AbortController();
+    const events: string[] = [];
+
+    const run = await runDevelopmentLoop({
+      runId: 'run-stop-before-rejection-handled',
+      featureBrief: {
+        summary: 'Add retry controls',
+        acceptanceCriteria: ['A user can set the retry limit'],
+      },
+      adapter: {
+        async createTestPlan() {
+          return {
+            strategy: 'Test the feature contract.',
+            cases: [
+              {
+                id: 'case-1',
+                name: 'Feature meets acceptance criteria',
+                level: 'integration',
+                expectedBehavior: 'The requested behavior is observable.',
+              },
+            ],
+          };
+        },
+        async createCodeProposal() {
+          controller.abort();
+          throw new Error('Adapter failed after stop request');
+        },
+        async executeTests() {
+          throw new Error('unreachable');
+        },
+        async validateResult() {
+          throw new Error('unreachable');
+        },
+      },
+      signal: controller.signal,
+      onEvent: (event) => events.push(event.type),
+    });
+
+    expect(run.status).toBe('stopped');
+    expect(events).not.toContain('stage-failed');
+    expect(events.filter((type) => type === 'run-completed')).toHaveLength(1);
+  });
 });

@@ -183,6 +183,11 @@ export async function runDevelopmentLoop(options: {
         artifact: testPlan,
       });
     } catch (error) {
+      const stoppedRun = stoppedIfAborted(iterations);
+      if (stoppedRun) {
+        return stoppedRun;
+      }
+
       const message = toErrorMessage(error);
       emit({
         type: 'stage-failed',
@@ -225,6 +230,11 @@ export async function runDevelopmentLoop(options: {
         artifact: code,
       });
     } catch (error) {
+      const stoppedRun = stoppedIfAborted(iterations);
+      if (stoppedRun) {
+        return stoppedRun;
+      }
+
       const message = toErrorMessage(error);
       emit({
         type: 'stage-failed',
@@ -267,6 +277,11 @@ export async function runDevelopmentLoop(options: {
         artifact: test,
       });
     } catch (error) {
+      const stoppedRun = stoppedIfAborted(iterations);
+      if (stoppedRun) {
+        return stoppedRun;
+      }
+
       const message = toErrorMessage(error);
       emit({
         type: 'stage-failed',
@@ -309,6 +324,11 @@ export async function runDevelopmentLoop(options: {
         artifact: validation,
       });
     } catch (error) {
+      const stoppedRun = stoppedIfAborted(iterations);
+      if (stoppedRun) {
+        return stoppedRun;
+      }
+
       const message = toErrorMessage(error);
       emit({
         type: 'stage-failed',
