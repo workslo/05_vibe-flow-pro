@@ -35,6 +35,12 @@ export const testPlanArtifactSchema = z.object({
     .min(1),
 });
 
+export const testPlanInputSchema = z.object({
+  featureBrief: featureBriefSchema,
+  iteration: z.number().int().positive(),
+  priorFeedback: z.array(z.string().trim().min(1)),
+});
+
 export const codeArtifactSchema = z.object({
   summary: z.string().trim().min(1),
   files: z
@@ -46,6 +52,10 @@ export const codeArtifactSchema = z.object({
     )
     .min(1),
   assumptions: z.array(z.string().trim().min(1)),
+});
+
+export const codeInputSchema = testPlanInputSchema.extend({
+  testPlan: testPlanArtifactSchema,
 });
 
 export const testArtifactSchema = z.object({
@@ -61,10 +71,18 @@ export const testArtifactSchema = z.object({
     .min(1),
 });
 
+export const testInputSchema = codeInputSchema.extend({
+  code: codeArtifactSchema,
+});
+
 export const validationArtifactSchema = z.object({
   verdict: z.enum(['pass', 'revise', 'blocked']),
   rationale: z.string().trim().min(1),
   feedback: z.array(z.string().trim().min(1)),
+});
+
+export const validationInputSchema = testInputSchema.extend({
+  test: testArtifactSchema,
 });
 
 export const developmentIterationSchema = z.object({
@@ -94,9 +112,13 @@ export type ValidationVerdict = z.infer<
   typeof validationArtifactSchema
 >['verdict'];
 export type FeatureBrief = z.infer<typeof featureBriefSchema>;
+export type TestPlanInput = z.infer<typeof testPlanInputSchema>;
 export type TestPlanArtifact = z.infer<typeof testPlanArtifactSchema>;
+export type CodeInput = z.infer<typeof codeInputSchema>;
 export type CodeArtifact = z.infer<typeof codeArtifactSchema>;
+export type TestInput = z.infer<typeof testInputSchema>;
 export type TestArtifact = z.infer<typeof testArtifactSchema>;
+export type ValidationInput = z.infer<typeof validationInputSchema>;
 export type ValidationArtifact = z.infer<typeof validationArtifactSchema>;
 export type DevelopmentIteration = z.infer<typeof developmentIterationSchema>;
 export type DevelopmentRun = z.infer<typeof developmentRunSchema>;

@@ -3,9 +3,13 @@ import {
   developmentIterationSchema,
   developmentRunSchema,
   featureBriefSchema,
+  type CodeInput,
   testArtifactSchema,
   testPlanArtifactSchema,
+  type TestInput,
+  type TestPlanInput,
   validationArtifactSchema,
+  type ValidationInput,
   type CodeArtifact,
   type DevelopmentExecutionStage,
   type DevelopmentIteration,
@@ -15,24 +19,6 @@ import {
   type TestPlanArtifact,
   type ValidationArtifact,
 } from './schemas';
-
-export type TestPlanInput = {
-  featureBrief: FeatureBrief;
-  iteration: number;
-  priorFeedback: string[];
-};
-
-export type CodeInput = TestPlanInput & {
-  testPlan: TestPlanArtifact;
-};
-
-export type TestInput = CodeInput & {
-  code: CodeArtifact;
-};
-
-export type ValidationInput = TestInput & {
-  test: TestArtifact;
-};
 
 export interface DevelopmentExecutionAdapter {
   createTestPlan(input: TestPlanInput): Promise<TestPlanArtifact>;
