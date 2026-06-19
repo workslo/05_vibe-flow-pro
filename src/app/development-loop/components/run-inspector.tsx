@@ -32,6 +32,23 @@ const statusClasses = {
   'iteration-limit': 'text-amber-700',
 } satisfies Record<RunStatus, string>;
 
+const testCaseStatusLabels = {
+  passed: 'PASS',
+  failed: 'FAIL',
+} as const;
+
+function formatCodeChange(change: string) {
+  return change.startsWith('Address feedback:')
+    ? 'Address the latest validation feedback before rerunning.'
+    : change;
+}
+
+function formatValidationRationale(rationale: string) {
+  return rationale === 'All acceptance evidence passed.'
+    ? 'Acceptance evidence satisfied.'
+    : rationale;
+}
+
 type ArtifactSectionId = 'test-plan' | 'code' | 'test' | 'validation';
 type ArtifactSectionItem<TArtifact> = {
   iteration: number;
@@ -281,7 +298,7 @@ export function RunInspector() {
                   <span className="font-mono text-slate-800">
                     {file.path}
                   </span>
-                  <span className="block">{file.change}</span>
+                  <span className="block">{formatCodeChange(file.change)}</span>
                 </li>
               ))}
             </ul>
@@ -297,7 +314,7 @@ export function RunInspector() {
             {artifact.cases.map((testCase) => (
               <li key={testCase.testCaseId}>
                 <span className="font-mono font-semibold uppercase">
-                  {testCase.status}
+                  {testCaseStatusLabels[testCase.status]}
                 </span>
                 <span className="ml-2">{testCase.evidence}</span>
               </li>
@@ -312,7 +329,7 @@ export function RunInspector() {
         renderArtifact={(artifact) => (
           <>
             <p className="mt-2 text-sm leading-6 text-slate-700">
-              {artifact.rationale}
+              {formatValidationRationale(artifact.rationale)}
             </p>
             {artifact.feedback.length ? (
               <ul className="mt-2 list-disc space-y-1 pl-4 text-xs leading-5 text-amber-800">

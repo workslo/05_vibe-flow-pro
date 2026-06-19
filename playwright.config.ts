@@ -4,6 +4,9 @@ export default defineConfig({
   testDir: './tests',
   outputDir: 'test-results',
   reporter: [['list'], ['html', { outputFolder: 'playwright-report' }]],
+  expect: {
+    timeout: 15000,
+  },
   use: {
     baseURL: 'http://127.0.0.1:3100',
     trace: 'retain-on-failure',

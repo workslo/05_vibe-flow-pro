@@ -59,6 +59,16 @@ function getArtifactSummary(
   stageArtifact: unknown,
   iteration?: DevelopmentIteration,
 ) {
+  const summarizeTestArtifact = (
+    status: 'passed' | 'failed',
+    caseCount: number,
+  ) =>
+    `${caseCount} test ${caseCount === 1 ? 'case' : 'cases'} ${status === 'passed' ? 'passing' : 'failing'}`;
+  const summarizeValidationRationale = (rationale: string) =>
+    rationale === 'All acceptance evidence passed.'
+      ? 'Acceptance evidence satisfied.'
+      : rationale;
+
   if (stageId === 'feature-brief') {
     return featureSummary || 'Describe the bounded change and acceptance checks.';
   }
@@ -81,14 +91,17 @@ function getArtifactSummary(
     case 'test': {
       const result = testArtifactSchema.safeParse(stageArtifact);
       if (result.success) {
-        return `${result.data.status === 'passed' ? 'Passed' : 'Failed'} · ${result.data.cases.length} test ${result.data.cases.length === 1 ? 'case' : 'cases'}`;
+        return summarizeTestArtifact(
+          result.data.status,
+          result.data.cases.length,
+        );
       }
       break;
     }
     case 'validate': {
       const result = validationArtifactSchema.safeParse(stageArtifact);
       if (result.success) {
-        return result.data.rationale;
+        return summarizeValidationRationale(result.data.rationale);
       }
       break;
     }
@@ -104,9 +117,12 @@ function getArtifactSummary(
     case 'code':
       return iteration.code.summary;
     case 'test':
-      return `${iteration.test.status === 'passed' ? 'Passed' : 'Failed'} · ${iteration.test.cases.length} test ${iteration.test.cases.length === 1 ? 'case' : 'cases'}`;
+      return summarizeTestArtifact(
+        iteration.test.status,
+        iteration.test.cases.length,
+      );
     case 'validate':
-      return iteration.validation.rationale;
+      return summarizeValidationRationale(iteration.validation.rationale);
     default:
       return 'No evidence yet.';
   }
