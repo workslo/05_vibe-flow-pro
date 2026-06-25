@@ -44,14 +44,8 @@ export default async function Home() {
                   className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90"
                 >
                   <Play className="size-4" />
-                  Open workflow
+                  Open lineage map
                 </Link>
-                <a
-                  href={productProfile.links.reactFlowDocs}
-                  className="inline-flex items-center gap-2 rounded-md border px-4 py-2.5 text-sm font-medium hover:bg-accent"
-                >
-                  React Flow docs
-                </a>
               </div>
             </div>
 
@@ -62,7 +56,7 @@ export default async function Home() {
                     {productProfile.defaultFlowName}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    Brand prompt to text brief to image draft
+                    Client thought to filed 1099-B
                   </p>
                 </div>
                 <span className="rounded-md bg-emerald-500/10 px-2 py-1 text-xs font-medium text-emerald-600 dark:text-emerald-400">

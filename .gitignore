@@ -1,8 +1,10 @@
 .DS_Store
 node_modules/
+.worktrees/
 .next/
 .playwright-cli/
 output/
+out/
 .env
 .env.*
 *.log

@@ -27,6 +27,7 @@ import { iconMapping } from '@/app/workflow/utils/icon-mapping';
 import { useAppStore } from '@/app/workflow/store';
 import { type AppStore } from '@/app/workflow/store/app-store';
 import { productProfile } from '@/app/workflow/product-profile';
+import { lineageStages } from '@/app/workflow/lineage-data';
 import { nodesConfig } from '../../config';
 
 export function AppSidebar(props: ComponentProps<typeof Sidebar>) {
@@ -40,9 +41,11 @@ export function AppSidebar(props: ComponentProps<typeof Sidebar>) {
           <span className="truncate font-semibold">{productProfile.name}</span>
         </div>
         <SidebarMenu>
-          {Object.values(nodesConfig).map((item) => (
-            <DraggableItem key={item.title} {...item} />
-          ))}
+          {Object.values(nodesConfig)
+            .filter((item) => item.id === 'lineage-stage-node')
+            .map((item) => (
+              <DraggableItem key={item.title} {...item} />
+            ))}
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
@@ -71,12 +74,24 @@ function DraggableItem(props: NodeConfig) {
   const [isDragging, setIsDragging] = useState(false);
 
   const onClick = useCallback(() => {
+    const starterStage = lineageStages[0];
     const newNode: AppNode = createNodeByType({
       type: props.id,
       position: screenToFlowPosition({
         x: window.innerWidth / 2,
         y: window.innerHeight / 2,
       }),
+      data:
+        props.id === 'lineage-stage-node'
+          ? {
+              ...starterStage,
+              title: 'New lineage stage',
+              summary:
+                'Describe the system hop, workflow control, data fields, outputs, and risk for this stage.',
+              status: 'initial',
+              icon: 'GitBranch',
+            }
+          : undefined,
     });
 
     addNode(newNode);

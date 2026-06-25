@@ -1,25 +1,30 @@
 export const productProfile = {
-  name: 'Vibe Flow Pro',
-  tagline: 'Workflow console',
+  name: 'TradeTrace',
+  tagline: 'Trade-to-1099 lineage workbench',
   description:
-    'Design, run, and inspect AI generation flows in a focused React Flow workspace with Zustand powering the editor state.',
-  defaultFlowName: 'Brand signal generator',
-  integrationStatus: 'Server key',
+    'Map how direct trading data moves from client intent through systems, operational controls, tax calculations, statements, and final 1099 filing.',
+  defaultFlowName: 'Equity sale to 1099-B',
+  integrationStatus: 'Seeded lineage',
   workflowStages: [
     {
       index: '01',
-      title: 'Creative brief',
-      detail: 'Prompt input',
+      title: 'Client intent',
+      detail: 'Sell 100 XYZ',
     },
     {
       index: '02',
-      title: 'Narrative pass',
-      detail: 'Generate text',
+      title: 'Execution to books',
+      detail: 'Order, fill, settlement',
     },
     {
       index: '03',
-      title: 'Visual draft',
-      detail: 'Generate image',
+      title: 'Tax lot engine',
+      detail: 'Basis and gain/loss',
+    },
+    {
+      index: '04',
+      title: '1099-B package',
+      detail: 'Form boxes and filing',
     },
   ],
   links: {
