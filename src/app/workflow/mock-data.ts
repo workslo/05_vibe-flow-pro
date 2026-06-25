@@ -1,37 +1,50 @@
 import { AppEdge, createEdge } from './components/edges';
 import { AppNode, createNodeByType } from './components/nodes';
+import { lineageStages } from './lineage-data';
 
-export const initialNodes: AppNode[] = [
+export const initialNodes: AppNode[] = lineageStages.map((stage, index) =>
   createNodeByType({
-    type: 'text-input-node',
-    id: 'characterPromptNode',
+    type: 'lineage-stage-node',
+    id: stage.id,
+    position: {
+      x: 180 + index * 390,
+      y:
+        stage.kind === 'control'
+          ? 420
+          : stage.kind === 'tax'
+            ? 170
+            : 260,
+    },
     data: {
-      text: 'Describe a polished product-console hero for a workflow automation tool in one concise visual direction.',
+      ...stage,
+      title: stage.title,
+      status: 'initial',
+      icon: 'GitBranch',
     },
   }),
-  createNodeByType({
-    type: 'text-input-node',
-    id: 'systemNode',
-    data: {
-      text: 'You are Vibe Flow Pro, a precise workflow design assistant for production-minded builders.',
-    },
-  }),
-  createNodeByType({ type: 'generate-text-node', id: 'generateTextNode' }),
-  createNodeByType({ type: 'generate-image-node', id: 'generateImageNode' }),
-];
+);
 
 export const initialEdges: AppEdge[] = [
-  createEdge('systemNode', 'generateTextNode', 'text-output', 'text-system'),
   createEdge(
-    'characterPromptNode',
-    'generateTextNode',
-    'text-output',
-    'text-prompt',
+    'client-intent',
+    'order-capture',
+    'lineage-output',
+    'lineage-input',
+  ),
+  createEdge('order-capture', 'execution', 'lineage-output', 'lineage-input'),
+  createEdge('execution', 'books-records', 'lineage-output', 'lineage-input'),
+  createEdge('books-records', 'tax-lot', 'lineage-output', 'lineage-input'),
+  createEdge('tax-lot', 'tax-review', 'lineage-output', 'lineage-input'),
+  createEdge(
+    'tax-review',
+    'form-production',
+    'lineage-output',
+    'lineage-input',
   ),
   createEdge(
-    'generateTextNode',
-    'generateImageNode',
-    'text-output',
-    'text-prompt',
+    'form-production',
+    'client-filing',
+    'lineage-output',
+    'lineage-input',
   ),
 ];
