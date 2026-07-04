@@ -37,3 +37,7 @@ Pull requests should include a concise description, verification steps, linked i
 ## Security & Configuration Tips
 
 Do not commit API keys or local environment files. The app reads `OPENAI_API_KEY` on the server through `src/app/api/openai.ts`; do not reintroduce browser-cookie, localStorage, or Settings-based credential entry. Keep logging and error messages from exposing secrets.
+
+## Work Tracking
+
+Linear owns project state; GitHub owns branches, PRs, reviews, and checks. Active work is tracked under the **SLO Fleet** team (`FLEET`). Include the Linear issue ID in branch names and PR bodies when available. Update Linear when work starts, blocks, opens a PR, merges, parks, or completes. Keep GitHub Issues for repo-native intake only; approved work should be tracked in Linear.
