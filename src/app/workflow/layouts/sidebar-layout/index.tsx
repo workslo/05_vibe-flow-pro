@@ -19,7 +19,7 @@ export default function SidebarLayout({
               {productProfile.defaultFlowName}
             </p>
             <p className="truncate text-xs text-muted-foreground">
-              Client intent → 1099-B · {productProfile.integrationStatus}
+              Zustand canvas state · {productProfile.integrationStatus}
             </p>
           </div>
           <div className="hidden items-center gap-2 text-xs text-muted-foreground sm:flex">

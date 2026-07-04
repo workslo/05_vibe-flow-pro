@@ -83,7 +83,7 @@
 - Produces Vitest alias `@` -> `src`.
 - Produces Playwright server environment `DEVELOPMENT_LOOP_ADAPTER=scripted`.
 
-- [ ] **Step 1: Write the failing smoke test**
+- [x] **Step 1: Write the failing smoke test**
 
 ```ts
 // src/test/smoke.test.ts
@@ -97,13 +97,13 @@ describe('test harness', () => {
 });
 ```
 
-- [ ] **Step 2: Run the missing test command**
+- [x] **Step 2: Run the missing test command**
 
 Run: `bun run test`
 
 Expected: FAIL because `package.json` has no `test` script.
 
-- [ ] **Step 3: Install the testing dependencies**
+- [x] **Step 3: Install the testing dependencies**
 
 Run:
 
@@ -113,7 +113,7 @@ bun add -d vitest @vitejs/plugin-react jsdom @testing-library/react @testing-lib
 
 Expected: dependencies are added to `package.json` and `bun.lock`.
 
-- [ ] **Step 4: Add exact test scripts**
+- [x] **Step 4: Add exact test scripts**
 
 Add to `package.json`:
 
@@ -127,7 +127,7 @@ Add to `package.json`:
 }
 ```
 
-- [ ] **Step 5: Configure Vitest**
+- [x] **Step 5: Configure Vitest**
 
 ```ts
 // vitest.config.ts
@@ -155,7 +155,7 @@ export default defineConfig({
 import '@testing-library/jest-dom/vitest';
 ```
 
-- [ ] **Step 6: Configure Playwright**
+- [x] **Step 6: Configure Playwright**
 
 ```ts
 // playwright.config.ts
@@ -187,7 +187,7 @@ export default defineConfig({
 });
 ```
 
-- [ ] **Step 7: Ignore test artifacts**
+- [x] **Step 7: Ignore test artifacts**
 
 Add to `.gitignore`:
 
@@ -197,13 +197,13 @@ test-results/
 coverage/
 ```
 
-- [ ] **Step 8: Verify the harness**
+- [x] **Step 8: Verify the harness**
 
 Run: `bun run test`
 
 Expected: `src/test/smoke.test.ts` passes.
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```bash
 git add package.json bun.lock .gitignore vitest.config.ts playwright.config.ts src/test
@@ -225,7 +225,7 @@ git commit -m "Add automated test harness"
 - Produces types inferred from those schemas.
 - Produces `DEVELOPMENT_STAGE_IDS`, `canonicalDevelopmentGraph`, and `validateDevelopmentGraph(nodes, edges)`.
 
-- [ ] **Step 1: Write failing schema tests**
+- [x] **Step 1: Write failing schema tests**
 
 ```ts
 // src/app/development-loop/domain/schemas.test.ts
@@ -260,13 +260,13 @@ describe('development loop schemas', () => {
 });
 ```
 
-- [ ] **Step 2: Run tests to verify RED**
+- [x] **Step 2: Run tests to verify RED**
 
 Run: `bun run test -- src/app/development-loop/domain/schemas.test.ts`
 
 Expected: FAIL because `./schemas` does not exist.
 
-- [ ] **Step 3: Implement the schemas**
+- [x] **Step 3: Implement the schemas**
 
 ```ts
 // src/app/development-loop/domain/schemas.ts
@@ -366,13 +366,13 @@ export type DevelopmentIteration = z.infer<typeof developmentIterationSchema>;
 export type DevelopmentRun = z.infer<typeof developmentRunSchema>;
 ```
 
-- [ ] **Step 4: Verify schema tests GREEN**
+- [x] **Step 4: Verify schema tests GREEN**
 
 Run: `bun run test -- src/app/development-loop/domain/schemas.test.ts`
 
 Expected: all schema tests pass.
 
-- [ ] **Step 5: Write failing graph validation tests**
+- [x] **Step 5: Write failing graph validation tests**
 
 ```ts
 // src/app/development-loop/domain/template.test.ts
@@ -408,13 +408,13 @@ describe('canonical development graph', () => {
 });
 ```
 
-- [ ] **Step 6: Run graph tests to verify RED**
+- [x] **Step 6: Run graph tests to verify RED**
 
 Run: `bun run test -- src/app/development-loop/domain/template.test.ts`
 
 Expected: FAIL because `./template` does not exist.
 
-- [ ] **Step 7: Implement canonical graph validation**
+- [x] **Step 7: Implement canonical graph validation**
 
 ```ts
 // src/app/development-loop/domain/template.ts
@@ -492,13 +492,13 @@ export function validateDevelopmentGraph(
 }
 ```
 
-- [ ] **Step 8: Verify graph tests GREEN**
+- [x] **Step 8: Verify graph tests GREEN**
 
 Run: `bun run test -- src/app/development-loop/domain`
 
 Expected: schema and template tests pass.
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```bash
 git add src/app/development-loop/domain
@@ -520,7 +520,7 @@ git commit -m "Define development loop contracts"
 - Produces `DevelopmentLoopEvent`.
 - Produces `createScriptedDevelopmentAdapter(verdicts)`.
 
-- [ ] **Step 1: Write failing revise-then-pass engine test**
+- [x] **Step 1: Write failing revise-then-pass engine test**
 
 ```ts
 // src/app/development-loop/domain/engine.test.ts
@@ -551,13 +551,13 @@ describe('runDevelopmentLoop', () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify RED**
+- [x] **Step 2: Run test to verify RED**
 
 Run: `bun run test -- src/app/development-loop/domain/engine.test.ts`
 
 Expected: FAIL because engine and scripted adapter do not exist.
 
-- [ ] **Step 3: Implement event and adapter contracts**
+- [x] **Step 3: Implement event and adapter contracts**
 
 In `engine.ts`, define:
 
@@ -596,7 +596,7 @@ export type DevelopmentLoopEvent =
   | { type: 'run-completed'; run: DevelopmentRun };
 ```
 
-- [ ] **Step 4: Implement the minimal engine**
+- [x] **Step 4: Implement the minimal engine**
 
 Implement `runDevelopmentLoop` so it:
 
@@ -627,7 +627,7 @@ export async function runDevelopmentLoop(options: {
 }): Promise<DevelopmentRun>;
 ```
 
-- [ ] **Step 5: Implement deterministic scripted artifacts**
+- [x] **Step 5: Implement deterministic scripted artifacts**
 
 ```ts
 // src/app/development-loop/domain/scripted-adapter.ts
@@ -697,7 +697,7 @@ export function createScriptedDevelopmentAdapter(
 }
 ```
 
-- [ ] **Step 6: Add terminal-state tests**
+- [x] **Step 6: Add terminal-state tests**
 
 Add tests proving:
 
@@ -706,13 +706,13 @@ Add tests proving:
 - an adapter exception returns `blocked` with `error`.
 - an already-aborted signal returns `stopped` before any adapter method runs.
 
-- [ ] **Step 7: Run engine tests GREEN**
+- [x] **Step 7: Run engine tests GREEN**
 
 Run: `bun run test -- src/app/development-loop/domain`
 
 Expected: all domain tests pass.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add src/app/development-loop/domain
@@ -733,7 +733,7 @@ git commit -m "Add bounded development loop engine"
 - Produces `POST /api/development-loop/stage`.
 - Produces `createOpenAIDevelopmentAdapter()`.
 
-- [ ] **Step 1: Write failing route tests**
+- [x] **Step 1: Write failing route tests**
 
 Test the route by constructing `NextRequest` instances:
 
@@ -781,13 +781,13 @@ an adapter whose methods throw `new Error('openai adapter selected')`. This
 proves the request's `adapter` key is ignored without making a live OpenAI
 request.
 
-- [ ] **Step 2: Run route tests RED**
+- [x] **Step 2: Run route tests RED**
 
 Run: `bun run test -- src/app/api/development-loop/stage/route.test.ts`
 
 Expected: FAIL because the route does not exist.
 
-- [ ] **Step 3: Implement stage request schemas**
+- [x] **Step 3: Implement stage request schemas**
 
 In the route, define a discriminated union:
 
@@ -802,7 +802,7 @@ const stageRequestSchema = z.discriminatedUnion('stage', [
 
 Export input schemas from `schemas.ts` or define them next to the domain input types so route and engine share one validation contract.
 
-- [ ] **Step 4: Implement the trusted adapter selection**
+- [x] **Step 4: Implement the trusted adapter selection**
 
 ```ts
 function getDevelopmentAdapter(): DevelopmentExecutionAdapter {
@@ -816,7 +816,7 @@ function getDevelopmentAdapter(): DevelopmentExecutionAdapter {
 
 The request schema must strip unknown keys; no request property influences adapter selection.
 
-- [ ] **Step 5: Implement OpenAI structured generation**
+- [x] **Step 5: Implement OpenAI structured generation**
 
 Use Vercel AI SDK `generateObject` with the existing `getOpenAIProvider()`:
 
@@ -833,7 +833,7 @@ return testPlanArtifactSchema.parse(object);
 
 Define one concise system prompt per stage. Each prompt must state that the output is a proposal/simulation and must not claim files or commands were actually executed.
 
-- [ ] **Step 6: Implement route dispatch and error responses**
+- [x] **Step 6: Implement route dispatch and error responses**
 
 Return:
 
@@ -841,13 +841,13 @@ Return:
 - `{ error: 'Invalid request', issues }` with `400` for Zod request errors.
 - `{ error: message }` with `500` for provider or adapter errors.
 
-- [ ] **Step 7: Run route and domain tests GREEN**
+- [x] **Step 7: Run route and domain tests GREEN**
 
 Run: `bun run test -- src/app/api/development-loop src/app/development-loop/domain`
 
 Expected: all tests pass without `OPENAI_API_KEY`.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add src/app/api/development-loop src/app/development-loop/server src/app/development-loop/domain
@@ -871,7 +871,7 @@ git commit -m "Add development loop stage API"
 - Produces `DevelopmentRunProvider` and `useDevelopmentRunStore`.
 - Store actions: `setFeatureBrief`, `startRun`, `requestStop`, `applyEvent`, `resetActiveRun`.
 
-- [ ] **Step 1: Write failing client adapter test**
+- [x] **Step 1: Write failing client adapter test**
 
 ```ts
 it('posts a stage request and parses the returned artifact', async () => {
@@ -903,13 +903,13 @@ it('posts a stage request and parses the returned artifact', async () => {
 });
 ```
 
-- [ ] **Step 2: Run client test RED**
+- [x] **Step 2: Run client test RED**
 
 Run: `bun run test -- src/app/development-loop/domain/client-adapter.test.ts`
 
 Expected: FAIL because `client-adapter.ts` does not exist.
 
-- [ ] **Step 3: Implement client stage calls**
+- [x] **Step 3: Implement client stage calls**
 
 Create a shared `callStage(stage, input, schema)` helper that:
 
@@ -918,7 +918,7 @@ Create a shared `callStage(stage, input, schema)` helper that:
 - Parses `artifact` with the supplied Zod schema.
 - Implements all four `DevelopmentExecutionAdapter` methods.
 
-- [ ] **Step 4: Write failing run-store reducer test**
+- [x] **Step 4: Write failing run-store reducer test**
 
 ```ts
 it('preserves completed iterations and run summaries', () => {
@@ -943,13 +943,13 @@ it('preserves completed iterations and run summaries', () => {
 });
 ```
 
-- [ ] **Step 5: Run store test RED**
+- [x] **Step 5: Run store test RED**
 
 Run: `bun run test -- src/app/development-loop/store/run-store.test.ts`
 
 Expected: FAIL because the store does not exist.
 
-- [ ] **Step 6: Implement the focused Zustand store**
+- [x] **Step 6: Implement the focused Zustand store**
 
 State:
 
@@ -980,17 +980,17 @@ type DevelopmentRunState = {
 
 `requestStop` calls `controller.abort()`.
 
-- [ ] **Step 7: Add provider and typed hook**
+- [x] **Step 7: Add provider and typed hook**
 
 Follow the existing `src/app/workflow/store/index.tsx` context/provider pattern, but use `createDevelopmentRunStore`.
 
-- [ ] **Step 8: Run adapter and store tests GREEN**
+- [x] **Step 8: Run adapter and store tests GREEN**
 
 Run: `bun run test -- src/app/development-loop/domain/client-adapter.test.ts src/app/development-loop/store`
 
 Expected: all tests pass.
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```bash
 git add src/app/development-loop/domain/client-adapter* src/app/development-loop/store
@@ -1016,7 +1016,7 @@ git commit -m "Add development loop client state"
 - Produces the `/development-loop` workspace.
 - Uses `data-testid="development-loop-canvas"` and accessible names required by E2E.
 
-- [ ] **Step 1: Write the failing workspace interaction test**
+- [x] **Step 1: Write the failing workspace interaction test**
 
 ```tsx
 it('requires a feature brief before running', async () => {
@@ -1035,13 +1035,13 @@ it('requires a feature brief before running', async () => {
 });
 ```
 
-- [ ] **Step 2: Run workspace test RED**
+- [x] **Step 2: Run workspace test RED**
 
 Run: `bun run test -- src/app/development-loop/components/development-loop-workspace.test.tsx`
 
 Expected: FAIL because the component does not exist.
 
-- [ ] **Step 3: Create canonical React Flow data**
+- [x] **Step 3: Create canonical React Flow data**
 
 Map the canonical graph to fixed positions:
 
@@ -1057,7 +1057,7 @@ const positions = {
 
 Render the revision edge as a dashed, animated edge with label `Revise`.
 
-- [ ] **Step 4: Implement the stage node**
+- [x] **Step 4: Implement the stage node**
 
 `DevelopmentNode` displays:
 
@@ -1068,7 +1068,7 @@ Render the revision edge as a dashed, animated edge with label `Revise`.
 
 The node is presentation-only; no execution logic lives in it.
 
-- [ ] **Step 5: Implement the run inspector**
+- [x] **Step 5: Implement the run inspector**
 
 `RunInspector` displays:
 
@@ -1080,7 +1080,7 @@ The node is presentation-only; no execution logic lives in it.
 
 Use semantic headings and buttons; no nested cards.
 
-- [ ] **Step 6: Implement workspace controls and execution**
+- [x] **Step 6: Implement workspace controls and execution**
 
 `DevelopmentLoopWorkspace`:
 
@@ -1096,7 +1096,7 @@ Use semantic headings and buttons; no nested cards.
 - Shows **Stop** only while running.
 - Leaves the canvas editable only for node position, not stage deletion or connection changes.
 
-- [ ] **Step 7: Add the route**
+- [x] **Step 7: Add the route**
 
 ```tsx
 // src/app/development-loop/page.tsx
@@ -1118,7 +1118,7 @@ export default function DevelopmentLoopPage() {
 }
 ```
 
-- [ ] **Step 8: Add revise-then-pass component test**
+- [x] **Step 8: Add revise-then-pass component test**
 
 Use `createScriptedDevelopmentAdapter(['revise', 'pass'])`, submit a valid brief, click **Run loop**, and assert:
 
@@ -1127,13 +1127,13 @@ Use `createScriptedDevelopmentAdapter(['revise', 'pass'])`, submit a valid brief
 - Inspector shows `2 iterations`.
 - Validation feedback from iteration one remains visible.
 
-- [ ] **Step 9: Run component and domain tests GREEN**
+- [x] **Step 9: Run component and domain tests GREEN**
 
 Run: `bun run test -- src/app/development-loop`
 
 Expected: all tests pass.
 
-- [ ] **Step 10: Commit**
+- [x] **Step 10: Commit**
 
 ```bash
 git add src/app/development-loop
@@ -1156,7 +1156,7 @@ git commit -m "Build AI development loop workspace"
 - Links creative generation to `/workflow`.
 - Shows tax operations mapper as `Next` without a clickable route.
 
-- [ ] **Step 1: Write the failing home-page test**
+- [x] **Step 1: Write the failing home-page test**
 
 ```tsx
 it('shows the three product workspaces with correct availability', () => {
@@ -1173,13 +1173,13 @@ it('shows the three product workspaces with correct availability', () => {
 });
 ```
 
-- [ ] **Step 2: Run page test RED**
+- [x] **Step 2: Run page test RED**
 
 Run: `bun run test -- src/app/page.test.tsx`
 
 Expected: FAIL because the workspace catalog and labels are absent.
 
-- [ ] **Step 3: Define the workspace catalog**
+- [x] **Step 3: Define the workspace catalog**
 
 ```ts
 // src/app/workspace-catalog.ts
@@ -1207,7 +1207,7 @@ export const workspaceCatalog = [
 ] as const;
 ```
 
-- [ ] **Step 4: Implement the tool-first chooser**
+- [x] **Step 4: Implement the tool-first chooser**
 
 Replace the root hero composition with:
 
@@ -1218,17 +1218,17 @@ Replace the root hero composition with:
 - Tax operations mapper is non-interactive with a `Next` status.
 - No recent-run panel is rendered in this increment because run history is scoped to the development-loop browser session.
 
-- [ ] **Step 5: Update product links**
+- [x] **Step 5: Update product links**
 
 Add `developmentLoop: '/development-loop'` to `productProfile.links` while preserving `workflow`.
 
-- [ ] **Step 6: Run page and full unit tests GREEN**
+- [x] **Step 6: Run page and full unit tests GREEN**
 
 Run: `bun run test`
 
 Expected: all Vitest tests pass.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add src/app/page.tsx src/app/page.test.tsx src/app/workspace-catalog.ts src/app/workflow/product-profile.ts
@@ -1248,7 +1248,7 @@ git commit -m "Add Vibe Flow Pro workspace chooser"
 - Consumes accessible labels from Tasks 6 and 7.
 - Proves the real browser flow through the scripted server adapter.
 
-- [ ] **Step 1: Write the failing Playwright scenario**
+- [x] **Step 1: Write the failing Playwright scenario**
 
 ```ts
 import { expect, test } from '@playwright/test';
@@ -1280,23 +1280,23 @@ test('development loop rejects an empty brief', async ({ page }) => {
 });
 ```
 
-- [ ] **Step 2: Install the Playwright browser**
+- [x] **Step 2: Install the Playwright browser**
 
 Run: `bunx playwright install chromium`
 
 Expected: Chromium installs successfully.
 
-- [ ] **Step 3: Run E2E to verify RED**
+- [x] **Step 3: Run E2E to verify RED**
 
 Run: `bun run test:e2e`
 
 Expected: FAIL until all accessible labels and scripted adapter behavior are wired correctly.
 
-- [ ] **Step 4: Fix only E2E-observed contract gaps**
+- [x] **Step 4: Fix only E2E-observed contract gaps**
 
 Adjust accessible labels, deterministic timing, or server adapter reuse without changing the approved product behavior. Do not add arbitrary sleeps; Playwright assertions must wait on visible state.
 
-- [ ] **Step 5: Document the new workflow**
+- [x] **Step 5: Document the new workflow**
 
 Update `README.md` with:
 
@@ -1319,7 +1319,7 @@ Update `AGENTS.md` so future agents preserve:
 - No live OpenAI calls in automated tests.
 - No repository or shell execution in the first loop.
 
-- [ ] **Step 6: Run the full verification matrix**
+- [x] **Step 6: Run the full verification matrix**
 
 Run:
 
@@ -1337,7 +1337,7 @@ Expected:
 - ESLint: zero warnings and errors.
 - Next build: production build completes successfully.
 
-- [ ] **Step 7: Capture visual evidence**
+- [x] **Step 7: Capture visual evidence**
 
 Start the scripted app:
 
@@ -1354,7 +1354,7 @@ Capture:
 
 Store temporary screenshots under `output/playwright/`; they remain gitignored and are referenced in the PR description only if uploaded by the publishing workflow.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add tests/development-loop.spec.ts README.md AGENTS.md

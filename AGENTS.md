@@ -6,6 +6,8 @@ This repository is the Vibe Flow Pro app: a Next.js 15 TypeScript workflow conso
 
 Product identity and shell state belong in `src/app/workflow/product-profile.ts`. Prefer wiring new labels, metadata, and default workspace copy through that module instead of scattering strings across the app.
 
+The bounded AI development loop lives under `src/app/development-loop/`. Keep the engine and schemas pure, keep adapter selection server-side, and treat `/development-loop` as a typed artifact surface rather than a place that mutates the repo or runs shell commands.
+
 Copied agent-support material is grouped in `skills copy/`, `commands copy/`, `hooks copy/`, `references copy/`, and `docs copy/`. Treat these as content/tooling assets unless a task targets them.
 
 ## Build, Test, and Development Commands
@@ -26,7 +28,16 @@ Name React components in PascalCase, hooks with a `use` prefix, and utility file
 
 ## Testing Guidelines
 
-No test runner or `test` script is currently configured. For now, verify changes with `bun run lint` and `bun run build`. When adding tests, keep them close to the feature and use names like `component-name.test.tsx` or `utility-name.test.ts`. Add a package script before relying on test commands in CI or docs.
+Use the repo scripts for verification:
+
+- `bun run test`
+- `bun run test:e2e`
+- `bun run lint`
+- `bun run build`
+
+Keep unit and component tests close to the feature with names like `component-name.test.tsx` or `utility-name.test.ts`. Playwright coverage lives in `tests/`.
+
+Automated tests must never call live OpenAI. For development-loop browser coverage, use the scripted adapter via `DEVELOPMENT_LOOP_ADAPTER=scripted`, which is already injected by the Playwright web server config.
 
 ## Commit & Pull Request Guidelines
 
@@ -38,6 +49,8 @@ Pull requests should include a concise description, verification steps, linked i
 
 Do not commit API keys or local environment files. The app reads `OPENAI_API_KEY` on the server through `src/app/api/openai.ts`; do not reintroduce browser-cookie, localStorage, or Settings-based credential entry. Keep logging and error messages from exposing secrets.
 
-## Work Tracking
+For `src/app/development-loop/**`, preserve these boundaries:
 
-Linear owns project state; GitHub owns branches, PRs, reviews, and checks. Active work is tracked under the **SLO Fleet** team (`FLEET`). Include the Linear issue ID in branch names and PR bodies when available. Update Linear when work starts, blocks, opens a PR, merges, parks, or completes. Keep GitHub Issues for repo-native intake only; approved work should be tracked in Linear.
+- Keep the loop engine deterministic and typed.
+- Select execution adapters on the server only.
+- Do not let the first loop write repository files, execute shell commands, create commits, push branches, or open pull requests inside the product.

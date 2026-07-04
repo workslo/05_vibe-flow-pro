@@ -1,14 +1,11 @@
 import { GenerateTextNodeType } from '../generate-text-node';
 import { NodeProcessor } from '..';
+import { GenerateTextApiResponse } from '@/app/api/generate-text/route';
 import {
   DEFAULT_TEMPERATURE,
   DEFAULT_TEXT_MODEL,
 } from '@/app/workflow/openai-data';
 import { IncomingNodeData } from '@/app/workflow/hooks/use-workflow-runner';
-
-type GenerateTextApiResponse =
-  | { text: string }
-  | { error: string; issues?: unknown[] };
 
 export const processGenerateTextNode: NodeProcessor<
   GenerateTextNodeType
@@ -37,14 +34,6 @@ export const processGenerateTextNode: NodeProcessor<
     return {
       status: 'error',
       error: 'No incoming text found for node',
-      text: undefined,
-    };
-  }
-
-  if (process.env.NEXT_PUBLIC_STATIC_EXPORT === 'true') {
-    return {
-      status: 'error',
-      error: 'AI generation is disabled in the static Cloudflare build.',
       text: undefined,
     };
   }

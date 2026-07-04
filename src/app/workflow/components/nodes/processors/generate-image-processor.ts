@@ -1,10 +1,7 @@
+import { GenerateImageApiResponse } from '@/app/api/generate-image/route';
 import { NodeProcessor } from '..';
 import { GenerateImageNodeType } from '../generate-image-node';
 import { IncomingNodeData } from '@/app/workflow/hooks/use-workflow-runner';
-
-type GenerateImageApiResponse =
-  | { image: string }
-  | { error: string; issues?: unknown[] };
 
 const DEFAULT_IMAGE_MODEL = 'dall-e-2';
 const DEFAULT_IMAGE_SIZE = '512x512';
@@ -25,14 +22,6 @@ export const processGenerateImageNode: NodeProcessor<
 
   if (!incomingPromptText) {
     return { status: 'error', error: 'No prompt text found', image: undefined };
-  }
-
-  if (process.env.NEXT_PUBLIC_STATIC_EXPORT === 'true') {
-    return {
-      status: 'error',
-      error: 'AI generation is disabled in the static Cloudflare build.',
-      image: undefined,
-    };
   }
 
   // Call the local API to generate an image

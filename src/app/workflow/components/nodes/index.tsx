@@ -18,7 +18,6 @@ import WorkflowTriggerNode, {
   processWorkflowTriggerNode,
   WorkflowTriggerNodeType,
 } from './workflow-trigger-node';
-import LineageStageNode, { LineageStageNodeType } from './lineage-stage-node';
 
 /* WORKFLOW NODE DATA PROPS ------------------------------------------------------ */
 export type RunnableNodeStatus = 'loading' | 'success' | 'error' | 'initial';
@@ -49,7 +48,6 @@ export const nodeTypes = {
   'generate-text-node': GenerateTextNode,
   'generate-image-node': GenerateImageNode,
   'workflow-trigger-node': WorkflowTriggerNode,
-  'lineage-stage-node': LineageStageNode,
 };
 
 export type TextNode = TextInputNodeType | GenerateTextNodeType;
@@ -58,9 +56,7 @@ export type ImageNode = GenerateImageNodeType;
 
 export type TriggerNode = WorkflowTriggerNodeType;
 
-export type LineageNode = LineageStageNodeType;
-
-export type AppNode = TextNode | ImageNode | TriggerNode | LineageNode;
+export type AppNode = TextNode | ImageNode | TriggerNode;
 
 export type NodeProcessor<T extends AppNode = AppNode> = (
   incomingNodeData: IncomingNodeData,
@@ -74,7 +70,6 @@ export const nodeProcessors = {
   'generate-text-node': processGenerateTextNode,
   'generate-image-node': processGenerateImageNode,
   'workflow-trigger-node': processWorkflowTriggerNode,
-  'lineage-stage-node': async () => ({ status: 'success' }),
 } as const;
 
 export function createNodeByType<T extends AppNode>({
@@ -96,7 +91,7 @@ export function createNodeByType<T extends AppNode>({
     icon: node.icon,
   };
 
-  const newNode = {
+  const newNode: AppNode = {
     id: id ?? nanoid(),
     data: data ? { ...defaultData, ...data } : defaultData,
     position: {
@@ -110,9 +105,9 @@ export function createNodeByType<T extends AppNode>({
     // width: NODE_SIZE.width,
     // height: NODE_SIZE.height,
     // handles: node.handles,
-  } as T;
+  };
 
-  return newNode;
+  return newNode as T;
 }
 
 export type AppNodeType = NonNullable<AppNode['type']>;

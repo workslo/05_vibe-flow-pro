@@ -84,26 +84,4 @@ export const nodesConfig: Record<AppNodeType, NodeConfig> = {
       },
     ],
   },
-  'lineage-stage-node': {
-    id: 'lineage-stage-node',
-    title: 'Lineage Stage',
-    icon: 'GitBranch',
-    status: 'initial',
-    handles: [
-      {
-        id: 'lineage-input',
-        type: 'target',
-        position: Position.Left,
-        x: 0,
-        y: NODE_SIZE.height * 0.5,
-      },
-      {
-        id: 'lineage-output',
-        type: 'source',
-        position: Position.Right,
-        x: NODE_SIZE.width,
-        y: NODE_SIZE.height * 0.5,
-      },
-    ],
-  },
 };
