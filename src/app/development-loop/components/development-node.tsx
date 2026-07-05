@@ -71,7 +71,7 @@ function DevelopmentNodeComponent({
     <article
       aria-label={`${data.label}: ${statusLabels[data.status]}`}
       className={cn(
-        'relative w-56 border bg-white px-4 py-3 shadow-sm transition-colors',
+        'relative flex h-56 w-56 flex-col rounded-xl border bg-white px-4 py-3 shadow-sm transition-colors',
         statusClasses[data.status],
       )}
     >
@@ -116,7 +116,7 @@ function DevelopmentNodeComponent({
         </span>
       </div>
 
-      <p className="mt-3 line-clamp-3 min-h-12 text-xs leading-5 text-slate-600">
+      <p className="mt-3 line-clamp-4 flex-1 text-xs leading-5 text-slate-600">
         {data.artifactSummary}
       </p>
       <p className="mt-3 border-t border-current/15 pt-2 font-mono text-[10px] uppercase tracking-[0.14em] opacity-70">

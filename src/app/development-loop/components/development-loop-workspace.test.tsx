@@ -45,6 +45,7 @@ describe('DevelopmentLoopWorkspace', () => {
     );
 
     expect(screen.getByTestId('development-loop-canvas')).toBeInTheDocument();
+    expect(screen.getByText('5 stages')).toBeVisible();
     await user.click(screen.getByRole('button', { name: 'Run loop' }));
 
     expect(
