@@ -61,6 +61,7 @@ export function DevelopmentLoopWorkspace(
   const requestStop = useDevelopmentRunStore((state) => state.requestStop);
   const applyEvent = useDevelopmentRunStore((state) => state.applyEvent);
   const isRunning = Boolean(controller) || activeRun?.status === 'running';
+  const stageCountLabel = `${graph.nodes.length} ${graph.nodes.length === 1 ? 'stage' : 'stages'}`;
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -149,6 +150,9 @@ export function DevelopmentLoopWorkspace(
               >
                 Plan, code, test, validate
               </h2>
+              <p className="mt-1 font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">
+                {stageCountLabel}
+              </p>
             </div>
             <p className="max-w-md text-xs leading-5 text-slate-500">
               Reposition stages to inspect the flow. Stage identities and
