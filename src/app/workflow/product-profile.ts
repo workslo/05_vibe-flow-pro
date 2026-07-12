@@ -2,24 +2,24 @@ export const productProfile = {
   name: 'Vibe Flow Pro',
   tagline: 'Workflow console',
   description:
-    'Design, run, and inspect AI generation flows in a focused React Flow workspace with Zustand powering the editor state.',
-  defaultFlowName: 'Brand signal generator',
+    'Map tax operations workflows, controls, owners, and handoffs in a focused React Flow workspace with Zustand powering editor state.',
+  defaultFlowName: 'Tax operations mapper',
   integrationStatus: 'Server key',
   workflowStages: [
     {
       index: '01',
-      title: 'Creative brief',
-      detail: 'Prompt input',
+      title: 'Process intake',
+      detail: 'Capture trigger',
     },
     {
       index: '02',
-      title: 'Narrative pass',
-      detail: 'Generate text',
+      title: 'Control mapping',
+      detail: 'Document controls',
     },
     {
       index: '03',
-      title: 'Visual draft',
-      detail: 'Generate image',
+      title: 'Owner handoff',
+      detail: 'Assign accountability',
     },
   ],
   links: {

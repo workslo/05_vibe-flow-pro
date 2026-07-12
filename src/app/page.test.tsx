@@ -11,11 +11,11 @@ describe('Home', () => {
       screen.getByRole('link', { name: /AI development loop/i }),
     ).toHaveAttribute('href', '/development-loop');
     expect(
-      screen.getByRole('link', { name: /Creative generation/i }),
+      screen.getByRole('link', { name: /Tax operations mapper/i }),
     ).toHaveAttribute('href', '/workflow');
-    expect(screen.getByText('Tax operations mapper')).toBeVisible();
+    expect(screen.getByText('Creative generation')).toBeVisible();
     expect(
-      screen.queryByRole('link', { name: /Tax operations mapper/i }),
+      screen.queryByRole('link', { name: /Creative generation/i }),
     ).not.toBeInTheDocument();
     expect(screen.getByText('Next')).toBeVisible();
   });

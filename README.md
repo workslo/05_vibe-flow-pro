@@ -2,7 +2,7 @@
 
 Vibe Flow Pro is a polished workflow console for designing, running, and inspecting AI generation flows. It pairs a React Flow canvas with a small Zustand store, Next.js App Router routes, and server-side Vercel AI SDK calls.
 
-The product direction is intentionally close to a professional workflow platform: the first screen introduces Vibe Flow Pro, `/workflow` opens the working canvas, and product copy is anchored in `src/app/workflow/product-profile.ts`.
+The product direction is intentionally close to a professional workflow platform: the first screen introduces Vibe Flow Pro, `/workflow` opens the tax operations mapper canvas, and product copy is anchored in `src/app/workflow/product-profile.ts`.
 
 The app also includes `/development-loop`: a bounded AI development workspace that captures a typed feature brief, test plan, code proposal, test evidence, and validation result for each iteration.
 

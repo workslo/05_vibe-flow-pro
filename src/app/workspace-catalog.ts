@@ -7,16 +7,16 @@ export const workspaceCatalog = [
     status: 'ready',
   },
   {
-    id: 'creative-generation',
-    name: 'Creative generation',
-    description: 'Turn a prompt into generated text and image output.',
+    id: 'tax-ops-mapper',
+    name: 'Tax operations mapper',
+    description: 'Visualize tax workflows, controls, owners, and handoffs.',
     href: '/workflow',
     status: 'ready',
   },
   {
-    id: 'tax-ops-mapper',
-    name: 'Tax operations mapper',
-    description: 'Visualize tax workflows, controls, owners, and handoffs.',
+    id: 'creative-generation',
+    name: 'Creative generation',
+    description: 'Turn a prompt into generated text and image output.',
     status: 'next',
   },
 ] as const;
