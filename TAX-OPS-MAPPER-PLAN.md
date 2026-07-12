@@ -52,7 +52,7 @@ Goal: build the `tax-ops-mapper` workspace so Trade Trace becomes the third feat
 ### Phase 2 — Scaffold the workspace (mirror development-loop)
 - [x] Add `src/app/tax-ops-mapper/store/` — a React Flow store provider for the lineage graph (follow `development-loop/store` or the existing `workflow/store` pattern; simplest that renders nodes/edges).
 - [x] Add `src/app/tax-ops-mapper/mock-data.ts` — seed the canvas from `lineageStages` (map each stage → a `lineage-stage-node`, wire sequential edges), like the old workflow mock-data did.
-- [ ] Add `src/app/tax-ops-mapper/components/tax-ops-workspace.tsx` — the React Flow canvas rendering the lineage-stage nodes + the **Break Explorer** panel (recovered from `10ed89f`) + a stage/Data-Passport sidebar. Read-only (no run controls).
+- [x] Add `src/app/tax-ops-mapper/components/tax-ops-workspace.tsx` — the React Flow canvas rendering the lineage-stage nodes + the **Break Explorer** panel (recovered from `10ed89f`) + a stage/Data-Passport sidebar. Read-only (no run controls).
 - [ ] Add `src/app/tax-ops-mapper/page.tsx` — metadata + Provider + `<TaxOpsWorkspace/>`, mirroring `development-loop/page.tsx`.
 
 ### Phase 3 — Wire it into the console

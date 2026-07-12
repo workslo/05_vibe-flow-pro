@@ -2,7 +2,6 @@ import { applyNodeChanges, type Edge, type NodeChange } from '@xyflow/react';
 import { create } from 'zustand';
 
 import type { LineageStageNodeType } from '../components/lineage-stage-node';
-import { lineageBreaks } from '../domain/lineage-data';
 
 export type LineageState = {
   nodes: LineageStageNodeType[];
@@ -33,24 +32,6 @@ export function createLineageStore(
 
     setSelectedStageId: (stageId) => set({ selectedStageId: stageId }),
 
-    setActiveBreakId: (breakId) => {
-      const impactedStageIds =
-        lineageBreaks.find((lineageBreak) => lineageBreak.id === breakId)
-          ?.impactedStageIds ?? [];
-
-      set((state) => ({
-        activeBreakId: breakId,
-        nodes: state.nodes.map((node) => {
-          const impacted = impactedStageIds.includes(node.id);
-          if (Boolean(node.data.highlightedByBreak) === impacted) {
-            return node;
-          }
-          return {
-            ...node,
-            data: { ...node.data, highlightedByBreak: impacted },
-          };
-        }),
-      }));
-    },
+    setActiveBreakId: (breakId) => set({ activeBreakId: breakId }),
   }));
 }
