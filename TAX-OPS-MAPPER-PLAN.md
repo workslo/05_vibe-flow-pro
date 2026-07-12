@@ -60,7 +60,7 @@ Goal: build the `tax-ops-mapper` workspace so Trade Trace becomes the third feat
 
 ### Phase 4 — Tests (mirror development-loop's coverage)
 - [x] Vitest unit: `src/app/tax-ops-mapper/domain/lineage-data.test.ts` — assert stage/break integrity (ids unique, breaks reference real stages/fields). Run `bun run test`.
-- [ ] Playwright e2e: from the picker, click **Tax operations mapper** → assert the lineage stages + Break Explorer render. Add to the existing Playwright suite. Run `bun run test:e2e`.
+- [x] Playwright e2e: from the picker, click **Tax operations mapper** → assert the lineage stages + Break Explorer render. Add to the existing Playwright suite. Run `bun run test:e2e`.
 
 ### Phase 5 — Docs
 - [ ] Update `AGENTS.md` + `README.md`: three workspaces, tax-ops-mapper now `ready`, sourced from the restored lineage workbench. Note the standalone `trade-trace` repo is superseded by this workspace.
