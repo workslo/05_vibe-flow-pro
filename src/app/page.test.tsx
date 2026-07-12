@@ -13,10 +13,9 @@ describe('Home', () => {
     expect(
       screen.getByRole('link', { name: /Creative generation/i }),
     ).toHaveAttribute('href', '/workflow');
-    expect(screen.getByText('Tax operations mapper')).toBeVisible();
     expect(
-      screen.queryByRole('link', { name: /Tax operations mapper/i }),
-    ).not.toBeInTheDocument();
-    expect(screen.getByText('Next')).toBeVisible();
+      screen.getByRole('link', { name: /Tax operations mapper/i }),
+    ).toHaveAttribute('href', '/tax-ops-mapper');
+    expect(screen.queryByText('Next')).not.toBeInTheDocument();
   });
 });

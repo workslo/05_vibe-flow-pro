@@ -17,6 +17,7 @@ export const workspaceCatalog = [
     id: 'tax-ops-mapper',
     name: 'Tax operations mapper',
     description: 'Visualize tax workflows, controls, owners, and handoffs.',
-    status: 'next',
+    href: '/tax-ops-mapper',
+    status: 'ready',
   },
 ] as const;

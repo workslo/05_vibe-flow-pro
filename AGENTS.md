@@ -2,11 +2,13 @@
 
 ## Project Structure & Module Organization
 
-This repository is the Vibe Flow Pro app: a Next.js 15 TypeScript workflow console for building AI generation flows. Application code lives in `src/`. App Router pages, layouts, and API routes are under `src/app/`; workflow editor code is under `src/app/workflow/`. Shared UI primitives live in `src/components/`, with shadcn-style components in `src/components/ui/`. Reusable hooks and utilities live in `src/hooks/` and `src/lib/`.
+This repository is the Vibe Flow Pro app: a Next.js 15 TypeScript workflow console with three workspaces — the AI development loop (`/development-loop`), creative generation (`/workflow`), and the tax operations mapper (`/tax-ops-mapper`). Application code lives in `src/`. App Router pages, layouts, and API routes are under `src/app/`; workflow editor code is under `src/app/workflow/`. Shared UI primitives live in `src/components/`, with shadcn-style components in `src/components/ui/`. Reusable hooks and utilities live in `src/hooks/` and `src/lib/`.
 
 Product identity and shell state belong in `src/app/workflow/product-profile.ts`. Prefer wiring new labels, metadata, and default workspace copy through that module instead of scattering strings across the app.
 
 The bounded AI development loop lives under `src/app/development-loop/`. Keep the engine and schemas pure, keep adapter selection server-side, and treat `/development-loop` as a typed artifact surface rather than a place that mutates the repo or runs shell commands.
+
+The tax operations mapper lives under `src/app/tax-ops-mapper/` and is a read-only visualization of the trade-to-1099 lineage (restored from the TradeTrace lineage workbench in commit `10ed89f`). It renders seeded data only: no AI calls, no API routes, no `OPENAI_API_KEY`. Keep it that way — stage and break data belong in `domain/lineage-data.ts`, and the workspace supersedes the standalone `shaneslo/trade-trace` repo.
 
 Copied agent-support material is grouped in `skills copy/`, `commands copy/`, `hooks copy/`, `references copy/`, and `docs copy/`. Treat these as content/tooling assets unless a task targets them.
 
