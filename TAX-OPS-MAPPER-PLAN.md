@@ -56,7 +56,7 @@ Goal: build the `tax-ops-mapper` workspace so Trade Trace becomes the third feat
 - [x] Add `src/app/tax-ops-mapper/page.tsx` — metadata + Provider + `<TaxOpsWorkspace/>`, mirroring `development-loop/page.tsx`.
 
 ### Phase 3 — Wire it into the console
-- [ ] In `src/app/workspace-catalog.ts`, change the `tax-ops-mapper` entry to add `href: '/tax-ops-mapper'` and set `status: 'ready'`. The picker (`src/app/page.tsx`) already renders `ready` workspaces as links — verify the card now navigates and the workspace renders (`bun run build`).
+- [x] In `src/app/workspace-catalog.ts`, change the `tax-ops-mapper` entry to add `href: '/tax-ops-mapper'` and set `status: 'ready'`. The picker (`src/app/page.tsx`) already renders `ready` workspaces as links — verify the card now navigates and the workspace renders (`bun run build`).
 
 ### Phase 4 — Tests (mirror development-loop's coverage)
 - [ ] Vitest unit: `src/app/tax-ops-mapper/domain/lineage-data.test.ts` — assert stage/break integrity (ids unique, breaks reference real stages/fields). Run `bun run test`.
