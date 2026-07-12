@@ -6,6 +6,8 @@ The product direction is intentionally close to a professional workflow platform
 
 The app also includes `/development-loop`: a bounded AI development workspace that captures a typed feature brief, test plan, code proposal, test evidence, and validation result for each iteration.
 
+The third workspace is `/tax-ops-mapper`: a read-only tax operations map that visualizes the trade-to-1099 lineage — stages, owners, systems, controls, and breaks — restored from the TradeTrace lineage workbench. It renders seeded data with no AI calls, and it supersedes the standalone `shaneslo/trade-trace` repo.
+
 ## Getting Started
 
 Use Bun for local work because this repo includes `bun.lock`.
@@ -26,7 +28,7 @@ Then start the app:
 bun run dev
 ```
 
-Open `http://localhost:3000` for the Vibe Flow Pro shell, `http://localhost:3000/workflow` for the canvas, or `http://localhost:3000/development-loop` for the bounded development loop.
+Open `http://localhost:3000` for the Vibe Flow Pro shell, `http://localhost:3000/workflow` for the canvas, `http://localhost:3000/development-loop` for the bounded development loop, or `http://localhost:3000/tax-ops-mapper` for the tax operations mapper (no API key needed).
 
 ## Local Secret Model
 
@@ -81,6 +83,14 @@ The bounded development loop lives under `src/app/development-loop/`.
 - `components/`: the sidebar, stage canvas, and live evidence inspector.
 - `store/`: browser-session run state and typed artifacts.
 - `page.tsx`: `/development-loop` route entrypoint.
+
+The tax operations mapper lives under `src/app/tax-ops-mapper/`.
+
+- `domain/`: lineage stages, breaks, and the TradeTrace product profile (pure data, restored from the lineage workbench at `10ed89f`).
+- `components/`: the lineage stage node and the read-only canvas with Data Passport and Break Explorer panels.
+- `store/`: nodes, edges, selected stage, and active break.
+- `mock-data.ts`: seeds the canvas from `lineageStages`.
+- `page.tsx`: `/tax-ops-mapper` route entrypoint. No AI calls or API routes.
 
 ## State Management
 

@@ -63,7 +63,7 @@ Goal: build the `tax-ops-mapper` workspace so Trade Trace becomes the third feat
 - [x] Playwright e2e: from the picker, click **Tax operations mapper** → assert the lineage stages + Break Explorer render. Add to the existing Playwright suite. Run `bun run test:e2e`.
 
 ### Phase 5 — Docs
-- [ ] Update `AGENTS.md` + `README.md`: three workspaces, tax-ops-mapper now `ready`, sourced from the restored lineage workbench. Note the standalone `trade-trace` repo is superseded by this workspace.
+- [x] Update `AGENTS.md` + `README.md`: three workspaces, tax-ops-mapper now `ready`, sourced from the restored lineage workbench. Note the standalone `trade-trace` repo is superseded by this workspace.
 
 ---
 
