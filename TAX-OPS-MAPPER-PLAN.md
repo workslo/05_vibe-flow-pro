@@ -46,7 +46,7 @@ Goal: build the `tax-ops-mapper` workspace so Trade Trace becomes the third feat
 - [x] `git switch -c feat/tax-ops-mapper-workspace` (off `main`). `bun install`. Confirm `bun run lint` + `bun run test` + `bun run build` are green **before** any change. Commit nothing.
 
 ### Phase 1 — Recover the lineage source into the new workspace
-- [ ] Create `src/app/tax-ops-mapper/` and recover `lineage-data.ts` from `10ed89f` into `src/app/tax-ops-mapper/domain/lineage-data.ts`; recover `product-profile.ts` into `src/app/tax-ops-mapper/domain/product-profile.ts`. Fix imports to the new paths. (Build/lint green — these are pure TS.)
+- [x] Create `src/app/tax-ops-mapper/` and recover `lineage-data.ts` from `10ed89f` into `src/app/tax-ops-mapper/domain/lineage-data.ts`; recover `product-profile.ts` into `src/app/tax-ops-mapper/domain/product-profile.ts`. Fix imports to the new paths. (Build/lint green — these are pure TS.)
 - [ ] Recover `lineage-stage-node.tsx` from `10ed89f` into `src/app/tax-ops-mapper/components/lineage-stage-node.tsx`; adapt imports (shared UI already exists under `@/components`).
 
 ### Phase 2 — Scaffold the workspace (mirror development-loop)
