@@ -10,8 +10,6 @@ The bounded AI development loop lives under `src/app/development-loop/`. Keep th
 
 The tax operations mapper lives under `src/app/tax-ops-mapper/` and is a read-only visualization of the trade-to-1099 lineage (restored from the TradeTrace lineage workbench in commit `10ed89f`). It renders seeded data only: no AI calls, no API routes, no `OPENAI_API_KEY`. Keep it that way — stage and break data belong in `domain/lineage-data.ts`, and the workspace supersedes the standalone `shaneslo/trade-trace` repo.
 
-Copied agent-support material is grouped in `skills copy/`, `commands copy/`, `hooks copy/`, `references copy/`, and `docs copy/`. Treat these as content/tooling assets unless a task targets them.
-
 ## Build, Test, and Development Commands
 
 Use Bun by default because `bun.lock` is present:
