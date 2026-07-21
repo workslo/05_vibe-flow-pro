@@ -1,6 +1,6 @@
 'use server';
 
-import { experimental_generateImage as generateImage } from 'ai';
+import { generateImage } from 'ai';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod/v4';
 
