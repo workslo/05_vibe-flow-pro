@@ -80,7 +80,9 @@ function LineageCanvas() {
       onNodesChange={store.onNodesChange}
       onNodeClick={onNodeClick}
       nodeTypes={nodeTypes}
+      deleteKeyCode={null}
       nodesConnectable={false}
+      nodesDraggable={false}
       fitView
       colorMode="system"
     >
