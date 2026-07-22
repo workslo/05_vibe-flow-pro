@@ -19,7 +19,7 @@ bun install
 Create `.env.local` with your OpenAI key:
 
 ```bash
-OPENAI_API_KEY=sk-...
+OPENAI_API_KEY=your-local-key
 ```
 
 Then start the app:
@@ -42,6 +42,32 @@ Generation nodes call local API routes:
 Both routes use `src/app/api/openai.ts`, which reads `OPENAI_API_KEY` from the server environment and returns a clear runtime error when it is missing.
 
 The development loop follows the same server-only rule. Adapter selection happens on the server, and automated tests use `DEVELOPMENT_LOOP_ADAPTER=scripted` so browser coverage never calls live OpenAI.
+
+## Cloudflare Workers
+
+The production target is Cloudflare Workers through `@opennextjs/cloudflare`. The app remains a server-capable Next.js App Router application; do not add `output: 'export'` or an Edge runtime override. The server routes at `/api/generate-text`, `/api/generate-image`, and `/api/development-loop/stage` are included in the Worker build.
+
+Build the Worker bundle locally:
+
+```bash
+bun run build:worker
+```
+
+Preview that bundle in the Workers runtime:
+
+```bash
+bun run preview
+```
+
+For a local Worker preview that exercises the OpenAI-backed routes, create an untracked `.dev.vars` file and set `NEXTJS_ENV=development` plus `OPENAI_API_KEY`. Keep that file local; `.dev.vars*` is ignored.
+
+Production requires `OPENAI_API_KEY` as a Worker secret. Set it only when an authorized deployment is being prepared:
+
+```bash
+bunx wrangler secret put OPENAI_API_KEY
+```
+
+Do not place the key in `wrangler.jsonc`, commit it, or expose it through a `NEXT_PUBLIC_` variable. The test preview injects only `DEVELOPMENT_LOOP_ADAPTER=scripted`, so automated checks never call OpenAI.
 
 ## Product State
 
@@ -115,9 +141,11 @@ Use that configuration only for local automation and E2E verification.
 ```bash
 bun run test
 bun run test:e2e
+bun run test:e2e:worker
 bun run lint
 bun run dev
 bun run build
+bun run build:worker
 bun run start
 ```
 

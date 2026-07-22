@@ -1,5 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
+const useWorkerPreview = process.env.PLAYWRIGHT_WORKER_PREVIEW === '1';
+
 export default defineConfig({
   testDir: './tests',
   outputDir: 'test-results',
@@ -13,11 +15,15 @@ export default defineConfig({
     screenshot: 'only-on-failure',
   },
   webServer: {
-    command: 'bun run dev -- --hostname 127.0.0.1 --port 3100',
+    command: useWorkerPreview
+      ? 'bun run preview:test'
+      : 'bun run dev -- --hostname 127.0.0.1 --port 3100',
     url: 'http://127.0.0.1:3100',
-    env: {
-      DEVELOPMENT_LOOP_ADAPTER: 'scripted',
-    },
+    env: useWorkerPreview
+      ? {}
+      : {
+          DEVELOPMENT_LOOP_ADAPTER: 'scripted',
+        },
     reuseExistingServer: false,
   },
   projects: [
