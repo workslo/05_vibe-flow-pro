@@ -47,7 +47,7 @@ test('tax ops mapper renders the lineage map from the picker', async ({
   expect(flowPositionAfterDrag).toBe(flowPositionBeforeDrag);
 
   await orderCaptureNode.click();
-  await page.keyboard.press('Delete');
+  await page.keyboard.press('Backspace');
   await expect(orderCaptureNode).toBeVisible();
 
   await expect(page.getByText('Data passport')).toBeVisible();
