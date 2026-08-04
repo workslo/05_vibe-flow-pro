@@ -175,7 +175,7 @@ describe('DevelopmentLoopWorkspace', () => {
   it('shows iteration 1 and blocked provider guidance after a stage failure', async () => {
     const user = userEvent.setup();
     const providerError =
-      'OPENAI_API_KEY is not configured. Add it to .env.local and restart the dev server.';
+      'OPENAI_API_KEY is not configured in the server environment.';
 
     render(
       <DevelopmentRunProvider>
@@ -207,7 +207,7 @@ describe('DevelopmentLoopWorkspace', () => {
     expect(screen.getByText(providerError)).toBeVisible();
     expect(
       screen.getByText(
-        'Add OPENAI_API_KEY to .env.local, restart the development server, and run the loop again.',
+        'Configure OPENAI_API_KEY in the server environment, restart or redeploy the server, and run the loop again.',
       ),
     ).toBeVisible();
     expect(
