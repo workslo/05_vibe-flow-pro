@@ -7,11 +7,17 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
+    "build:worker": "opennextjs-cloudflare build",
     "start": "next start",
+    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "preview:test": "opennextjs-cloudflare preview -- --ip 127.0.0.1 --port 3100 --var DEVELOPMENT_LOOP_ADAPTER:scripted",
+    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
     "lint": "eslint . --max-warnings=0",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test:e2e:worker": "bun run build:worker && PLAYWRIGHT_WORKER_PREVIEW=1 playwright test"
   },
   "dependencies": {
     "@ai-sdk/openai": "^4.0.8",
@@ -45,6 +51,7 @@
     "zustand": "^5.0.12"
   },
   "devDependencies": {
+    "@opennextjs/cloudflare": "1.20.1",
     "@playwright/test": "^1.61.0",
     "@tailwindcss/postcss": "^4.2.2",
     "@testing-library/jest-dom": "^6.9.1",
@@ -60,6 +67,7 @@
     "postcss": "^8",
     "tailwindcss": "^4.2.2",
     "typescript": "^5.9.3",
-    "vitest": "^4.1.9"
+    "vitest": "^4.1.9",
+    "wrangler": "^4.113.0"
   }
 }

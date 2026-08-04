@@ -257,7 +257,7 @@ export function RunInspector() {
           <p className="mt-1">{activeRun.error}</p>
           <p className="mt-2 text-xs leading-5">
             {hasMissingKeyError
-              ? 'Add OPENAI_API_KEY to .env.local, restart the development server, and run the loop again.'
+              ? 'Configure OPENAI_API_KEY in the server environment, restart or redeploy the server, and run the loop again.'
               : 'Confirm the provider configuration and connectivity, then run the loop again.'}
           </p>
         </div>

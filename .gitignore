@@ -2,13 +2,19 @@
 node_modules/
 .worktrees/
 .next/
+.open-next/
+.wrangler/
 .playwright-cli/
 output/
 .env
 .env.*
+.dev.vars*
 *.log
 .claude/.simplify-ignore-cache/
 .claude/sdd-cache/
 playwright-report/
 test-results/
 coverage/
+
+# daily-repo-tasks routine output
+TODAY.md

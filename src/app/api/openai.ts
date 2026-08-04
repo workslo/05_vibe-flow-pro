@@ -5,7 +5,7 @@ export function getOpenAIProvider() {
 
   if (!apiKey) {
     throw new Error(
-      'OPENAI_API_KEY is not configured. Add it to .env.local and restart the dev server.',
+      'OPENAI_API_KEY is not configured in the server environment.',
     );
   }
 
