@@ -61,6 +61,19 @@ bun run preview
 
 For a local Worker preview that exercises the OpenAI-backed routes, create an untracked `.dev.vars` file and set `NEXTJS_ENV=development` plus `OPENAI_API_KEY`. Keep that file local; `.dev.vars*` is ignored.
 
+### Production access model
+
+Model-backed routes fail closed in production. With `NODE_ENV=production`, `/api/generate-text`, `/api/generate-image`, and the OpenAI-backed development-loop adapter return `503 ai_routes_disabled` unless `AI_ROUTES_ENABLED=true`. That covers Vercel previews and any Worker deploy. The scripted adapter is never gated because it spends nothing.
+
+The app has no user accounts, so set `AI_ROUTES_ENABLED=true` only on a deployment behind an upstream access boundary (for example Cloudflare Access on the Worker route) with rate limiting at that edge. Unsetting it is also the incident switch: it stops model spend without a redeploy of code.
+
+Every model route also enforces, in code:
+
+- Request body caps (32 KB text, 8 KB image, 64 KB development-loop stage), returned as `413 payload_too_large`.
+- Input bounds: text prompt ≤ 8,000 chars, system ≤ 4,000, temperature 0–2, image prompt ≤ 4,000.
+- An output cap of 2,048 tokens per text or development-loop generation.
+- A stable error envelope `{ error, code, correlationId? }`. Provider messages never reach the caller. Server logs carry only the route, correlation id, error name, and provider status code.
+
 Production requires `OPENAI_API_KEY` as a Worker secret. Set it only when an authorized deployment is being prepared:
 
 ```bash

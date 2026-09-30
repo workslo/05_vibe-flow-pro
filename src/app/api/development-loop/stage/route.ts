@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod/v4';
 
+import { type ApiErrorBody, handleRouteError } from '@/app/api/http';
+import {
+  assertModelRoutesEnabled,
+  readBoundedJson,
+  REQUEST_BYTE_LIMITS,
+} from '@/app/api/guard';
 import { createScriptedDevelopmentAdapter } from '@/app/development-loop/domain/scripted-adapter';
 import type { DevelopmentExecutionAdapter } from '@/app/development-loop/domain/engine';
 import {
@@ -19,15 +25,14 @@ const stageRequestSchema = z.discriminatedUnion('stage', [
 ]);
 
 type StageRequest = z.infer<typeof stageRequestSchema>;
-type StageResponse =
-  | { artifact: unknown }
-  | { error: string; issues?: unknown[] };
+type StageResponse = { artifact: unknown } | ApiErrorBody;
 
 function getDevelopmentAdapter(): DevelopmentExecutionAdapter {
   if (process.env.DEVELOPMENT_LOOP_ADAPTER === 'scripted') {
     return createScriptedDevelopmentAdapter();
   }
 
+  assertModelRoutesEnabled();
   return createOpenAIDevelopmentAdapter();
 }
 
@@ -51,24 +56,16 @@ export async function POST(
   req: NextRequest,
 ): Promise<NextResponse<StageResponse>> {
   try {
-    const body = await req.json();
+    const adapter = getDevelopmentAdapter();
+    const body = await readBoundedJson(
+      req,
+      REQUEST_BYTE_LIMITS.developmentLoopStage,
+    );
     const request = stageRequestSchema.parse(body);
-    const artifact = await executeStage(getDevelopmentAdapter(), request);
+    const artifact = await executeStage(adapter, request);
 
     return NextResponse.json({ artifact });
   } catch (error) {
-    if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { error: 'Invalid request', issues: error.issues },
-        { status: 400 },
-      );
-    }
-
-    return NextResponse.json(
-      {
-        error: error instanceof Error ? error.message : 'Internal server error',
-      },
-      { status: 500 },
-    );
+    return handleRouteError('development-loop/stage', error);
   }
 }

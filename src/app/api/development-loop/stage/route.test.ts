@@ -103,8 +103,9 @@ describe('POST /api/development-loop/stage', () => {
     );
 
     expect(response.status).toBe(500);
-    expect(await response.json()).toEqual({
-      error: 'openai adapter selected',
+    expect(await response.json()).toMatchObject({
+      error: 'Internal server error',
+      code: 'internal_error',
     });
   });
 });

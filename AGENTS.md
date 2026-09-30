@@ -48,7 +48,7 @@ Local env: `.env.local` with `OPENAI_API_KEY` for `bun run dev`. For a Worker pr
 
 ### Server-only AI calls
 
-Every model call runs server-side through `src/app/api/openai.ts`, which reads `OPENAI_API_KEY` from the environment. The API routes are `api/generate-text`, `api/generate-image`, and `api/development-loop/stage`. Don't reintroduce browser-cookie, localStorage, Settings-dialog, or `NEXT_PUBLIC_` key entry. Client storage is for UI preferences only.
+Every model call runs server-side through `src/app/api/openai.ts`, which reads `OPENAI_API_KEY` from the environment. Routes read bodies with `readBoundedJson` and call `assertModelRoutesEnabled()` from `src/app/api/guard.ts` before any model call. In production the routes stay off unless `AI_ROUTES_ENABLED=true`. Failures go through `handleRouteError` in `src/app/api/http.ts`, which returns `{ error, code, correlationId? }` and never the caught message. A new model route keeps all three. The API routes are `api/generate-text`, `api/generate-image`, and `api/development-loop/stage`. Don't reintroduce browser-cookie, localStorage, Settings-dialog, or `NEXT_PUBLIC_` key entry. Client storage is for UI preferences only.
 
 ### `/workflow` canvas
 
