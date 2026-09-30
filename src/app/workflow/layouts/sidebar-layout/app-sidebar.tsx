@@ -27,6 +27,7 @@ import { iconMapping } from '@/app/workflow/utils/icon-mapping';
 import { useAppStore } from '@/app/workflow/store';
 import { type AppStore } from '@/app/workflow/store/app-store';
 import { productProfile } from '@/app/workflow/product-profile';
+import { NODE_DRAG_MIME } from '@/app/workflow/hooks/useDragAndDrop';
 import { nodesConfig } from '../../config';
 
 export function AppSidebar(props: ComponentProps<typeof Sidebar>) {
@@ -84,7 +85,7 @@ function DraggableItem(props: NodeConfig) {
 
   const onDragStart = useCallback(
     (e: React.DragEvent) => {
-      e.dataTransfer.setData('application/reactflow', JSON.stringify(props));
+      e.dataTransfer.setData(NODE_DRAG_MIME, JSON.stringify(props));
       setIsDragging(true);
     },
     [props],
