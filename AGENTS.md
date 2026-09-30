@@ -1,56 +1,94 @@
-# Repository Guidelines
+# AGENTS.md
 
-## Project Structure & Module Organization
+This file provides guidance to AI coding agents (Claude Code, Codex, and others) working in this repository. `CLAUDE.md` is a symlink to this file. Edit `AGENTS.md` only, and don't replace the symlink with a copy.
 
-This repository is the Vibe Flow Pro app: a Next.js 15 TypeScript workflow console with three workspaces — the AI development loop (`/development-loop`), creative generation (`/workflow`), and the tax operations mapper (`/tax-ops-mapper`). Application code lives in `src/`. App Router pages, layouts, and API routes are under `src/app/`; workflow editor code is under `src/app/workflow/`. Shared UI primitives live in `src/components/`, with shadcn-style components in `src/components/ui/`. Reusable hooks and utilities live in `src/hooks/` and `src/lib/`.
+## What this is
 
-Product identity and shell state belong in `src/app/workflow/product-profile.ts`. Prefer wiring new labels, metadata, and default workspace copy through that module instead of scattering strings across the app.
+Vibe Flow Pro is a Next.js 15 App Router app (React 19, TypeScript strict) with three workspaces, all listed in `src/app/workspace-catalog.ts` and linked from the root page:
 
-The bounded AI development loop lives under `src/app/development-loop/`. Keep the engine and schemas pure, keep adapter selection server-side, and treat `/development-loop` as a typed artifact surface rather than a place that mutates the repo or runs shell commands.
+- `/development-loop`: a bounded AI development loop that records typed artifacts per iteration.
+- `/workflow`: the creative-generation canvas (text and image generation nodes).
+- `/tax-ops-mapper`: a read-only trade-to-1099 lineage map built from seeded data.
 
-The tax operations mapper lives under `src/app/tax-ops-mapper/` and is a read-only visualization of the trade-to-1099 lineage (restored from the TradeTrace lineage workbench in commit `10ed89f`). It renders seeded data only: no AI calls, no API routes, no `OPENAI_API_KEY`. Keep it that way — stage and break data belong in `domain/lineage-data.ts`, and the workspace supersedes the standalone `shaneslo/trade-trace` repo.
+Each workspace is self-contained under `src/app/<workspace>/` with its own `components/`, `store/`, `mock-data.ts`, and `page.tsx`. Shared primitives live in `src/components/` (shadcn-style in `src/components/ui/`), `src/hooks/`, and `src/lib/`. Keep workspace code inside its workspace, and promote it to a shared folder only when a second workspace actually reuses it.
 
-## Build, Test, and Development Commands
+The production target is **Cloudflare Workers via `@opennextjs/cloudflare`**. The app is server-capable: don't add `output: 'export'` or an Edge runtime override.
 
-Use Bun by default because `bun.lock` is present:
+## Commands
 
-- `bun install`: install dependencies.
-- `bun run dev`: start the local Next.js dev server with Turbopack.
-- `bun run build`: create a production build and run framework-level checks.
-- `bun run start`: serve the production build after `bun run build`.
-- `bun run lint`: run the configured Next.js lint script.
+Use Bun (`bun.lock` is the lockfile).
 
-## Coding Style & Naming Conventions
+```bash
+bun install
+bun run dev              # next dev --turbopack on :3000
+bun run lint             # eslint, --max-warnings=0
+bun run test             # vitest run (jsdom), src/**/*.test.ts(x)
+bun run test:e2e         # playwright, tests/*.spec.ts
+bun run build            # next build
+bun run build:worker     # OpenNext Cloudflare bundle
+bun run preview          # build:worker + run it in the Workers runtime
+bun run test:e2e:worker  # Playwright against the Worker preview
+bun run deploy           # production deploy; only when a deploy is authorized
+bun run cf-typegen       # regenerate cloudflare-env.d.ts
+```
 
-Write TypeScript and React components with strict typing enabled. Use 2-space indentation, single quotes, semicolons, and trailing commas. Prefer path aliases such as `@/components/ui/button` and `@/lib/utils`.
+Single tests:
 
-Name React components in PascalCase, hooks with a `use` prefix, and utility files in kebab-case or the existing local pattern. Keep workflow-specific code inside `src/app/workflow/`; only promote code to shared folders when it is genuinely reused.
+```bash
+bunx vitest run src/app/development-loop/domain/engine.test.ts
+bunx vitest run -t "name of the test"
+bunx playwright test tests/tax-ops-mapper.spec.ts
+```
 
-## Testing Guidelines
+Vitest excludes `tests/`. Playwright owns that folder and starts its own dev server on `127.0.0.1:3100` with `DEVELOPMENT_LOOP_ADAPTER=scripted` (`reuseExistingServer: false`, so free port 3100 first). The pre-PR gate is `lint`, `test`, `build`, and `test:e2e`.
 
-Use the repo scripts for verification:
+Local env: `.env.local` with `OPENAI_API_KEY` for `bun run dev`. For a Worker preview, use an untracked `.dev.vars` with `NEXTJS_ENV=development` and `OPENAI_API_KEY`. `/tax-ops-mapper` needs no key.
 
-- `bun run test`
-- `bun run test:e2e`
-- `bun run lint`
-- `bun run build`
+## Architecture
 
-Keep unit and component tests close to the feature with names like `component-name.test.tsx` or `utility-name.test.ts`. Playwright coverage lives in `tests/`.
+### Server-only AI calls
 
-Automated tests must never call live OpenAI. For development-loop browser coverage, use the scripted adapter via `DEVELOPMENT_LOOP_ADAPTER=scripted`, which is already injected by the Playwright web server config.
+Every model call runs server-side through `src/app/api/openai.ts`, which reads `OPENAI_API_KEY` from the environment. The API routes are `api/generate-text`, `api/generate-image`, and `api/development-loop/stage`. Don't reintroduce browser-cookie, localStorage, Settings-dialog, or `NEXT_PUBLIC_` key entry. Client storage is for UI preferences only.
 
-## Commit & Pull Request Guidelines
+### `/workflow` canvas
 
-Git history currently contains only `Init project`, so no project-specific convention is established. Use short, imperative subjects such as `Add workflow node validation`.
+The Zustand store (`workflow/store/app-store.ts`) owns nodes, edges, connect behavior, and node mutations. React Flow renders the canvas, but app-level state changes go through the store. `config.ts` defines each node type's handles. `hooks/use-workflow-runner.tsx` walks the graph, collects incoming data **per target handle id** (for example `text-system` and `text-prompt`), and dispatches to a per-type function in `components/nodes/processors/`. Those processors `fetch` the API routes. A new node type touches the node component, `nodesConfig`, the `nodeProcessors` registry in `components/nodes/index.tsx`, and usually a processor.
 
-Pull requests should include a concise description, verification steps, linked issues when available, and screenshots or screen recordings for workflow UI changes. Note new environment variables, API changes, or test gaps.
+Product identity (brand, page metadata, sidebar label, flow status, default stage labels) lives in `workflow/product-profile.ts`. Route new copy through it instead of scattering strings.
 
-## Security & Configuration Tips
+### `/development-loop`
 
-Do not commit API keys or local environment files. The app reads `OPENAI_API_KEY` on the server through `src/app/api/openai.ts`; do not reintroduce browser-cookie, localStorage, or Settings-based credential entry. Keep logging and error messages from exposing secrets.
+`domain/` is pure: zod schemas (`schemas.ts`), template validation, and `engine.ts`'s `runDevelopmentLoop`. That function drives test-plan → code → test → validate through a `DevelopmentExecutionAdapter` interface, emits typed events, and stops at an iteration cap (default 3). The browser uses `client-adapter.ts`, which POSTs `{ stage, input }` to `api/development-loop/stage` and zod-parses the returned artifact. That route picks the real adapter **on the server**: `scripted-adapter.ts` when `DEVELOPMENT_LOOP_ADAPTER=scripted`, and otherwise `server/openai-adapter.ts`. `store/run-store.ts` holds browser-session run state.
 
-For `src/app/development-loop/**`, preserve these boundaries:
+Boundaries to preserve:
 
-- Keep the loop engine deterministic and typed.
-- Select execution adapters on the server only.
-- Do not let the first loop write repository files, execute shell commands, create commits, push branches, or open pull requests inside the product.
+- Keep the engine deterministic and typed.
+- Select adapters on the server only.
+- The loop never writes repo files, runs shell commands, commits, pushes, or opens PRs from inside the product.
+- Automated tests never call live OpenAI. Use the scripted adapter.
+
+### `/tax-ops-mapper`
+
+A read-only visualization, restored from the TradeTrace lineage workbench (commit `10ed89f`). It supersedes the standalone `shaneslo/trade-trace` repo. It makes no AI calls, has no API routes, and needs no key. Keep it that way (FLEET-68 enforced this). Stage and break data belong in `domain/lineage-data.ts`. The store tracks nodes, edges, the selected stage, and the active break.
+
+## Style
+
+- TypeScript strict; 2-space indent, single quotes, semicolons, trailing commas.
+- Use the `@/` path alias (`@/components/ui/button`, `@/lib/utils`).
+- PascalCase components, `use`-prefixed hooks, kebab-case files (or the local pattern).
+- Unit tests sit next to the code as `name.test.ts(x)`.
+- Import zod as `zod/v4`, matching the existing code.
+
+## Commits, PRs, and tracking
+
+- Conventional commits, with the tracker ID in the subject: `feat: add Cloudflare Workers target (FLEET-67)`.
+- PRs are squash-merged to `main`.
+- PR bodies explain why, list verification steps, include screenshots for UI changes, and note any new env vars or test gaps.
+- Linear is the tracker. Recent work used `FLEET-*` IDs. Put the ID in branch names and PR bodies when one exists.
+- GitHub owns branches, PRs, reviews, and checks.
+
+## Repo-local notes
+
+- `docs/` holds handoff briefs and design specs (`docs/superpowers/{plans,specs}`). Read the relevant one when a task continues that work.
+- `TAX-OPS-MAPPER-PLAN.md` is the historical plan for the mapper workspace.
+- `.worktrees/` is gitignored and is the place for local worktrees.
