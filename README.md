@@ -10,7 +10,7 @@ The third workspace is `/tax-ops-mapper`: a read-only tax operations map that vi
 
 ## Getting Started
 
-Use Bun for local work because this repo includes `bun.lock`.
+Use Bun for local work because this repo includes `bun.lock`. The supported version is pinned in `package.json` (`packageManager: bun@1.3.14`), and CI installs that exact version.
 
 ```bash
 bun install
