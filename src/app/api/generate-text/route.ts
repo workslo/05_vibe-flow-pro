@@ -4,12 +4,11 @@ import { generateText } from 'ai';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod/v4';
 
+import { type ApiErrorBody, handleRouteError } from '@/app/api/http';
 import { getOpenAIProvider } from '@/app/api/openai';
 import { OPENAI_TEXT_MODELS } from '@/app/workflow/openai-data';
 
-export type GenerateTextApiResponse =
-  | { text: string }
-  | { error: string; issues?: unknown[] };
+export type GenerateTextApiResponse = { text: string } | ApiErrorBody;
 
 const bodySchema = z.object({
   // The valid models are defined in OPENAI_TEXT_MODELS
@@ -38,18 +37,6 @@ export async function POST(
       text,
     });
   } catch (error) {
-    if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { error: 'Invalid request', issues: error.issues },
-        { status: 400 },
-      );
-    }
-
-    return NextResponse.json(
-      {
-        error: error instanceof Error ? error.message : 'Internal server error',
-      },
-      { status: 500 },
-    );
+    return handleRouteError('generate-text', error);
   }
 }

@@ -4,6 +4,7 @@ import { generateImage } from 'ai';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod/v4';
 
+import { apiError, type ApiErrorBody, handleRouteError } from '@/app/api/http';
 import { getOpenAIProvider } from '@/app/api/openai';
 import {
   ImageSize,
@@ -13,7 +14,7 @@ import {
 
 export type GenerateImageApiResponse =
   | { image: string } // Image as Base64 string
-  | { error: string; issues?: unknown[] };
+  | ApiErrorBody;
 
 const bodySchema = z
   .object({
@@ -45,10 +46,10 @@ export async function POST(
     const { model, prompt, size } = bodySchema.parse(body);
 
     if (!size) {
-      return NextResponse.json(
-        { error: 'Image size is required' },
-        { status: 400 },
-      );
+      return apiError(400, {
+        error: 'Image size is required',
+        code: 'invalid_request',
+      });
     }
 
     const openai = getOpenAIProvider();
@@ -63,19 +64,6 @@ export async function POST(
       image: image.base64,
     });
   } catch (error) {
-    console.error(error);
-
-    if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { error: 'Invalid request', issues: error.issues },
-        { status: 400 },
-      );
-    }
-    return NextResponse.json(
-      {
-        error: error instanceof Error ? error.message : String(error),
-      },
-      { status: 500 },
-    );
+    return handleRouteError('generate-image', error);
   }
 }
