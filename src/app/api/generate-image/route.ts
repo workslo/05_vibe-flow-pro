@@ -5,6 +5,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod/v4';
 
 import { apiError, type ApiErrorBody, handleRouteError } from '@/app/api/http';
+import {
+  assertModelRoutesEnabled,
+  readBoundedJson,
+  REQUEST_BYTE_LIMITS,
+} from '@/app/api/guard';
 import { getOpenAIProvider } from '@/app/api/openai';
 import {
   ImageSize,
@@ -19,7 +24,7 @@ export type GenerateImageApiResponse =
 const bodySchema = z
   .object({
     model: z.enum(OPENAI_IMAGE_MODELS),
-    prompt: z.string(),
+    prompt: z.string().max(4000),
     size: z.string(),
   })
   .refine(
@@ -42,7 +47,8 @@ export async function POST(
   req: NextRequest,
 ): Promise<NextResponse<GenerateImageApiResponse>> {
   try {
-    const body = await req.json();
+    assertModelRoutesEnabled();
+    const body = await readBoundedJson(req, REQUEST_BYTE_LIMITS.generateImage);
     const { model, prompt, size } = bodySchema.parse(body);
 
     if (!size) {

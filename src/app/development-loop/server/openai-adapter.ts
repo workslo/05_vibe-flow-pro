@@ -1,6 +1,7 @@
 import { generateObject } from 'ai';
 import { z } from 'zod/v4';
 
+import { MAX_OUTPUT_TOKENS } from '@/app/api/guard';
 import { getOpenAIProvider } from '@/app/api/openai';
 import type { DevelopmentExecutionAdapter } from '@/app/development-loop/domain/engine';
 import {
@@ -37,6 +38,7 @@ async function generateStageArtifact<TInput, TArtifact>(options: {
     schema: options.schema,
     system: options.system,
     prompt: JSON.stringify(options.input),
+    maxOutputTokens: MAX_OUTPUT_TOKENS,
   });
 
   return options.schema.parse(object);

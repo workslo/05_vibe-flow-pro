@@ -15,6 +15,27 @@ export type ApiErrorBody = {
   issues?: unknown[];
 };
 
+export class InvalidJsonBodyError extends Error {
+  constructor() {
+    super('Request body must be valid JSON.');
+    this.name = 'InvalidJsonBodyError';
+  }
+}
+
+export class PayloadTooLargeError extends Error {
+  constructor(readonly maxBytes: number) {
+    super(`Request body exceeds ${maxBytes} bytes.`);
+    this.name = 'PayloadTooLargeError';
+  }
+}
+
+export class AiRoutesDisabledError extends Error {
+  constructor() {
+    super('AI routes are disabled on this deployment.');
+    this.name = 'AiRoutesDisabledError';
+  }
+}
+
 export class ProviderNotConfiguredError extends Error {
   constructor() {
     super('Model provider is not configured.');
@@ -53,6 +74,18 @@ export function handleRouteError(
       code: 'invalid_request',
       issues: error.issues,
     });
+  }
+
+  if (error instanceof InvalidJsonBodyError) {
+    return apiError(400, { error: error.message, code: 'invalid_request' });
+  }
+
+  if (error instanceof PayloadTooLargeError) {
+    return apiError(413, { error: error.message, code: 'payload_too_large' });
+  }
+
+  if (error instanceof AiRoutesDisabledError) {
+    return apiError(503, { error: error.message, code: 'ai_routes_disabled' });
   }
 
   if (error instanceof ProviderNotConfiguredError) {
