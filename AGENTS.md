@@ -16,7 +16,7 @@ The production target is **Cloudflare Workers via `@opennextjs/cloudflare`**. Th
 
 ## Commands
 
-Use Bun (`bun.lock` is the lockfile).
+Use Bun (`bun.lock` is the lockfile). The version is pinned in `package.json` `packageManager` (`bun@1.3.14`), and CI (`.github/workflows/ci.yml`) reads it from there.
 
 ```bash
 bun install
@@ -40,7 +40,7 @@ bunx vitest run -t "name of the test"
 bunx playwright test tests/tax-ops-mapper.spec.ts
 ```
 
-Vitest excludes `tests/`. Playwright owns that folder and starts its own dev server on `127.0.0.1:3100` with `DEVELOPMENT_LOOP_ADAPTER=scripted` (`reuseExistingServer: false`, so free port 3100 first). The pre-PR gate is `lint`, `test`, `build`, and `test:e2e`.
+Vitest excludes `tests/`. Playwright owns that folder and starts its own dev server on `127.0.0.1:3100` with `DEVELOPMENT_LOOP_ADAPTER=scripted` (`reuseExistingServer: false`, so free port 3100 first). The pre-PR gate is `lint`, `test`, `build`, and `test:e2e`. CI runs the same gate on every PR and on pushes to `main`, and uploads the Playwright report when a run fails.
 
 Local env: `.env.local` with `OPENAI_API_KEY` for `bun run dev`. For a Worker preview, use an untracked `.dev.vars` with `NEXTJS_ENV=development` and `OPENAI_API_KEY`. `/tax-ops-mapper` needs no key.
 
